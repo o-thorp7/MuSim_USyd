@@ -1,7 +1,10 @@
-# System to obtain air density from ERA5
-> Written by Man-Yau (Joseph) Chan
+# System to obtain muon fluxes from ERA5
+> Initially written by Man-Yau (Joseph) Chan, extended by William Luszczak
 
 ## Description
+This system is composed of 2 parts: a set of programs to pull and process ERA5 data to extrat the density field, and a set of scripts to run muom flux simulations using the extracted atmospheric information. 
+
+###Programs to obtain ERA5 data:
 This system of programs generate density data from ERA5.
 There are two sets of programs: download programs and the density calculation program.
 
@@ -11,15 +14,22 @@ ensemble (i.e., the control member) are downloaded.
 
 The density calculation program converts the downloaded ERA5 data into density data.
 
+###Scripts to run muon flux simulation
+These scripts will used the unpacked and processed ERA5 data to generate a simulated muon flux measurement.
+This entails splining the density field, averaging it azimuth, and then running a "representative" muon flux calculation through the resultant x-z density profile. 
+The muon flux as a function of zenith is then integrated to arrive at an estimated total muon flux rate per square meter (Hz/m^2) 
+
 
 ## System Requirements
 *Python version 3.10+
 *Python packages numpy, matplotlib, netCDF4, cdsapi, sys, datetime, pickle
-
+*CDS API, see setup instructions here: https://cds.climate.copernicus.eu/how-to-api
+*MCEq: https://github.com/mceq-project/MCEq
+*Scripts are written to work with Slurm, though can probably be adapted to use a different job submission framework. 
 
 
 ## Usage Instructions
-The procedure to use this system is:
+The procedure to use the ERA5 system is:
 
 1)  Define the settings relevant to your situation in `config.sh`.
    The settings to control this program are in `config.sh`. 
@@ -34,6 +44,19 @@ The procedure to use this system is:
             run_download_and_process.sh
     ```
 
+Once ERA5 files have been downloaded and processed, the muon flux calculation can be done via:
+
+1) Define relevant settings in (lon, lat, account number, output directory) submit_spline_jobs.sh
+
+2) mkdir splines mufluxes
+
+2) ./submit_spline_jobs.sh
+
+3) ./submit_muflux_jobs.sh
+
+4) ./combine_muflux_files.sh
+
+You should then end up with a bunch of .npy files in the mufluxes/ directory, with names like `combined_muflux_${timestamp}.npy`. These files should contain muon fluxes as a function of cos(zenith angle), and the numbers within can be totaled up to arrive at a total muon flux for that time period. 
 
 ## About the Outputted Density Data
 Density data, along with longitude, latitude, and altitude data, are outputted in the 
