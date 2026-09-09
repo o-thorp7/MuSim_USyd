@@ -52,6 +52,9 @@ for f in "${FILES[@]}"; do
 
         echo "Submitting job for ${fname} -> ${outfile}"
 
-        sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_muflux_calc.sh ${f} ${th} ${outfile}
+        # sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_muflux_calc.sh ${f} ${th} ${outfile}
+        PATH="$CONDA_PREFIX/bin:/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH" \
+        /opt/homebrew/bin/bash submit_muflux_calc.sh "${f}" "${LON}" "${LAT}" "${outfile}" \
+        > "logs/${jobname}.out" 2> "logs/${jobname}.err"
     done
 done

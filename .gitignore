@@ -1,0 +1,5 @@
+*.nc
+*.npy
+*.pkl
+log*
+.DS_Store

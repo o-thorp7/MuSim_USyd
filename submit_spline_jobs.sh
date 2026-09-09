@@ -51,5 +51,9 @@ for f in "${FILES[@]}"; do
 
     echo "Submitting job for ${fname} -> ${outfile}"
 
-    sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}
+    # sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}
+    PATH="$CONDA_PREFIX/bin:/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH" \
+    /opt/homebrew/bin/bash submit_slice_spline.sh "${f}" "${LON}" "${LAT}" "${outfile}" \
+    > "logs/${jobname}.out" 2> "logs/${jobname}.err"
+
 done
