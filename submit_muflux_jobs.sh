@@ -51,7 +51,8 @@ for f in "${FILES[@]}"; do
         jobname="muflux_${timestamp}"
 
         echo "Submitting job for ${fname} -> ${outfile}"
-
+        
+        # added by oli:
         bash submit_muflux_calc.sh "${f}" "${th}" "${outfile}" > "logs/${jobname}.out" 2> "logs/${jobname}.err"
         # sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_muflux_calc.sh ${f} ${th} ${outfile}
     done

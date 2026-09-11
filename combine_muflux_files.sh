@@ -47,6 +47,7 @@ for f in "${FILES[@]}"; do
     fi
 
     echo "combining files for" ${timestamp}
+    # added by oli:
     # python3 combine_muflux_files.py ${timestamp} .
     $CONDA_PREFIX/bin/python combine_muflux_files.py ${timestamp} .
 

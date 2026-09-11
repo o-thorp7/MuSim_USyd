@@ -99,6 +99,7 @@ t_atmosphere = TestAtmosphere("USStd", None, fpath=this_fpath)
 print("Defining run")
 mceq_run = MCEqRun(
         interaction_model='SIBYLL23E',
+        # added by oli:
         # interaction_model='SIBYLL2.3c',
         primary_model=(pm.HillasGaisser2012, "H3a"),
         theta_deg=0.
