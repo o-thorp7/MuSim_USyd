@@ -7,8 +7,10 @@
 
 # Dates of interest
 # ------------------
-date_st=202606090000    # First date of interest
-date_ed=202606140000    # Last date of interest
+# date_st=202606090000    # First date of interest
+# date_ed=202606140000    # Last date of interest
+date_st=202606230000    # First date of interest
+date_ed=202606240000    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 

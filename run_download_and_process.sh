@@ -5,6 +5,12 @@
 # Written by Man-Yau (Joseph) Chan
 # =========================================================================
 
+# added by oli:
+# load miniconda environment
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate phys3888
+#
+
 # Load configuration
 . config.sh
 

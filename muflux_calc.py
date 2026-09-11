@@ -37,7 +37,9 @@ class TestAtmosphere(CorsikaAtmosphere):
             location, season
         )
         self.init_parameters(location, season)
-        import MCEq.geometry.corsikaatm.corsikaatm as corsika_acc
+        import MCEq.geometry.corsikaatm as corsika_acc
+        # import MCEq.geometry.corsikaatm.corsikaatm as corsika_acc
+
 
         self.corsika_acc = corsika_acc
         self.phis = phis
@@ -96,7 +98,8 @@ t_atmosphere = TestAtmosphere("USStd", None, fpath=this_fpath)
 
 print("Defining run")
 mceq_run = MCEqRun(
-        interaction_model='SIBYLL2.3c',
+        interaction_model='SIBYLL23E',
+        # interaction_model='SIBYLL2.3c',
         primary_model=(pm.HillasGaisser2012, "H3a"),
         theta_deg=0.
         )

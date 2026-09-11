@@ -52,6 +52,7 @@ for f in "${FILES[@]}"; do
 
         echo "Submitting job for ${fname} -> ${outfile}"
 
-        sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_muflux_calc.sh ${f} ${th} ${outfile}
+        bash submit_muflux_calc.sh "${f}" "${th}" "${outfile}" > "logs/${jobname}.out" 2> "logs/${jobname}.err"
+        # sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_muflux_calc.sh ${f} ${th} ${outfile}
     done
 done

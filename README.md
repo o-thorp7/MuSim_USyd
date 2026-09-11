@@ -4,7 +4,7 @@
 ## Description
 This system is composed of 2 parts: a set of programs to pull and process ERA5 data to extrat the density field, and a set of scripts to run muom flux simulations using the extracted atmospheric information. 
 
-###Programs to obtain ERA5 data:
+### Programs to obtain ERA5 data:
 This system of programs generate density data from ERA5.
 There are two sets of programs: download programs and the density calculation program.
 
@@ -14,7 +14,7 @@ ensemble (i.e., the control member) are downloaded.
 
 The density calculation program converts the downloaded ERA5 data into density data.
 
-###Scripts to run muon flux simulation
+### Scripts to run muon flux simulation
 These scripts will used the unpacked and processed ERA5 data to generate a simulated muon flux measurement.
 This entails splining the density field, averaging it azimuth, and then running a "representative" muon flux calculation through the resultant x-z density profile. 
 The muon flux as a function of zenith is then integrated to arrive at an estimated total muon flux rate per square meter (Hz/m^2) 
@@ -43,6 +43,14 @@ The procedure to use the ERA5 system is:
         sbatch -n 4 -N 1 -t 01:00:00 -o log.prep_density_data -A $PROJECT_CODE  \
             run_download_and_process.sh
     ```
+
+    <!-- changes made by oli -->
+    Or if running locally on Linux, try
+    ```
+    nohup bash run_download_and_process.sh > log.prep_density_data 2>&1 &
+    ```
+
+    <!--  -->
 
 Once ERA5 files have been downloaded and processed, the muon flux calculation can be done via:
 
