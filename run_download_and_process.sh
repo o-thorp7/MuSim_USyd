@@ -53,7 +53,9 @@ echo Starting to run downloads
 
 # Loop over scripts to run
 for script in $download_script_list; do
-    logfile=log.${script::-3}
+    #added by oli
+    logfile=logs/log.${script::-3}
+    # logfile=log.${script::-3}
     echo Running $script
     request_date_loop $script >& $logfile &
 done

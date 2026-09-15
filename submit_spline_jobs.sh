@@ -15,6 +15,8 @@ LON=151.1873
 LAT=-33.8886
 
 # --- Directories ---
+# added by oli
+# INPUT_DIR="density_era5_hires"
 INPUT_DIR="."          # where the .pkl files live
 OUTPUT_DIR="splines"   # where the .npy outputs go
 mkdir -p "${OUTPUT_DIR}"

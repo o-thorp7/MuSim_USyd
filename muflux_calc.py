@@ -37,6 +37,7 @@ class TestAtmosphere(CorsikaAtmosphere):
             location, season
         )
         self.init_parameters(location, season)
+        # added by oli
         import MCEq.geometry.corsikaatm as corsika_acc
         # import MCEq.geometry.corsikaatm.corsikaatm as corsika_acc
 
@@ -108,6 +109,10 @@ print("Setting density model")
 mceq_run.set_density_model(t_atmosphere)
 #mceq_run.set_density_model(regc_atmosphere)
 e_grid = mceq_run.e_grid
+
+# added by oli
+np.save("egrid.npy", e_grid)
+#
 
 eints = []
 thetas = [this_theta]
