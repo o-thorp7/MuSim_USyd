@@ -58,8 +58,8 @@ Once ERA5 files have been downloaded and processed, the muon flux calculation ca
 
 You should then end up with a bunch of .npy files in the mufluxes/ directory, with names like `combined_muflux_${timestamp}.npy`. These files should contain muon fluxes as a function of cos(zenith angle), and the numbers within can be totaled up to arrive at a total muon flux for that time period. 
 
-## About the Outputted Density Data
-Density data, along with longitude, latitude, and altitude data, are outputted in the 
+## About the Output Density Data
+Density data, along with longitude, latitude, and altitude data, are output in the 
 form of Python pickle files. 
 
 Two such pickle files are produced for each date: 
@@ -111,3 +111,10 @@ Dimensions of `air_density`, `altitude`, and `valid_points` in `hires` files:
 
 Dimensions of `air_density`, `altitude`, and `valid_points` in `ensem` files:
     ensemble, level, latitude, longitude# MuSim_USyd
+    
+    
+## Plotting Data
+
+plot_output.ipynb shows an example of how to plot the resultant muon fluxes as a function of time. You will need to replace the filepaths to point to your own data files containing the files resulting from combine_muflux_files.sh
+
+extract_psfc.py contains an example of how to extract a particular true atmospheric quantity from the *.pkl files that are generated when downloading the era5 data. This is useful if you (for example) want to compare the muon fluxes with the true atmospheric pressure at a given location/time. Note however, that in order to run this script, you will need to replace the filepaths with ones pointing to your .pkl files, wherever those live. 
