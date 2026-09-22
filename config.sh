@@ -7,9 +7,14 @@
 
 # Dates of interest
 # ------------------
-date_st=202606090000    # First date of interest
-date_ed=202606140000    # Last date of interest
+# added by oli
+date_st=202606090000    # First date of interest # eventually want 09/06/2026 to 22/07/2026
+date_ed=202606091200    # Last date of interest
 time_interval=180       # Number of minutes between files to download
+#
+# date_st=202606090000    # First date of interest
+# date_ed=202606140000    # Last date of interest
+# time_interval=180       # Number of minutes between files to download
 
 
 # Region of interest (currently: Sydney, Australia)
