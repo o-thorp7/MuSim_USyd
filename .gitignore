@@ -1,0 +1,6 @@
+*.nc
+*.npy
+*.pkl
+.vscode/
+log*
+.DS_Store
