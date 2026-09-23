@@ -1,16 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Submits one Slurm job per avg_spline_*.npy file, running
 # muflux_calc.py for each zenith angle.
 #
 # Usage:
-#   ./submit_muflux_jobs.sh
+#   ./submit_muflux_jobs.sh config/conda_test.sh
 #
 
 set -euo pipefail
 
+# Get config file from first argument, default to config/default.sh
+CONFIG_FILE="${1:-config/default.sh}"
+
+if [[ ! -f "${CONFIG_FILE}" ]]; then
+    echo "Error: Config file not found: ${CONFIG_FILE}" >&2
+    exit 1
+fi
+
 # Load configuration
-. config.sh
+. "${CONFIG_FILE}"
 
 # Set directories for this pipeline stage
 INPUT_DIR="${SPLINE_DIR}"
@@ -54,10 +62,11 @@ for f in "${FILES[@]}"; do
 
         if [[ "${RUN_MODE}" == "local" ]]; then
             echo "Running locally: submit_muflux_calc.sh ${f} ${th} ${outfile}"
-            bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
+            CONFIG_FILE="${CONFIG_FILE}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
         else
             sbatch "${ACCOUNT_FLAG[@]}" --mem="${MUFLUX_MEM}" --time="${MUFLUX_TIME}" \
                 --output="${LOG_DIR}/${jobname}_%j.out" --error="${LOG_DIR}/${jobname}_%j.err" \
+                --export=CONFIG_FILE="${CONFIG_FILE}" \
                 submit_muflux_calc.sh ${f} ${th} ${outfile}
         fi
     done

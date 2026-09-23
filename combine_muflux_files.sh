@@ -1,15 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Combines muflux outputs from all zenith angles into one flux curve.
 #
 # Usage:
-#   ./combine_muflux_files.sh
+#   ./combine_muflux_files.sh config/conda_test.sh
 #
 
 set -euo pipefail
 
+# Get config file from first argument, default to config/default.sh
+CONFIG_FILE="${1:-config/default.sh}"
+
+if [[ ! -f "${CONFIG_FILE}" ]]; then
+    echo "Error: Config file not found: ${CONFIG_FILE}" >&2
+    exit 1
+fi
+
 # Load configuration
-. config.sh
+. "${CONFIG_FILE}"
 
 # Set directories
 INPUT_DIR="${SPLINE_DIR}"

@@ -1,12 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # =========================================================================
 # Bash script to call down ERA5 10-member ensemble and ERA5 control member
 # -------------------------------------------------------------------------
 # Written by Man-Yau (Joseph) Chan
 # =========================================================================
 
+# Get config file from environment variable (set by sbatch --export)
+# or from first argument (if run locally), default to config/default.sh
+CONFIG_FILE="${CONFIG_FILE:-${1:-config/default.sh}}"
+
+if [[ ! -f "${CONFIG_FILE}" ]]; then
+    echo "Error: Config file not found: ${CONFIG_FILE}" >&2
+    exit 1
+fi
+
 # Load configuration
-. config.sh
+. "${CONFIG_FILE}"
 
 # Environment setup (needed because sbatch shells don't source ~/.bashrc)
 if [[ "${ENV_TYPE}" == "venv" ]]; then
@@ -54,7 +63,7 @@ function request_date_loop {
 
 # Opening message
 date
-echo Starting to run downloads
+echo Starting to run downloads with config: ${CONFIG_FILE}
 
 # Loop over scripts to run
 for script in $download_script_list; do

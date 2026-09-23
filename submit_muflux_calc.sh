@@ -1,7 +1,16 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+
+# Get config file from environment variable (set by sbatch --export)
+# or from first argument (if run locally), default to config/default.sh
+CONFIG_FILE="${CONFIG_FILE:-${1:-config/default.sh}}"
+
+if [[ ! -f "${CONFIG_FILE}" ]]; then
+    echo "Error: Config file not found: ${CONFIG_FILE}" >&2
+    exit 1
+fi
 
 # Load configuration
-. config.sh
+. "${CONFIG_FILE}"
 
 # Environment setup (needed because sbatch shells don't source ~/.bashrc)
 if [[ "${ENV_TYPE}" == "venv" ]]; then

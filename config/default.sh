@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # =========================================================================
 # Configuration controlling ERA5 downloads and density calculations
 # -------------------------------------------------------------------------
@@ -8,7 +8,7 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202606091200    # Last date of interest
+date_ed=202606230000    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 
@@ -32,9 +32,9 @@ download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  
 # Config identity — compute BASE_DIR from this script's location
 # ---------------------------------------------------------------
 CONFIG_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "${SCRIPT_DIR}")"
-BASE_DIR="${REPO_ROOT}/../musim_outputs/${CONFIG_NAME}"
+CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "${CONFIG_DIR}")"
+BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_results"
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
@@ -54,8 +54,8 @@ MUFLUX_MEM="5G"
 # Python environment
 # -------------------
 ENV_TYPE="venv"             # "venv" or "conda"
-VENV_PATH="${HOME}/musim_env"
-CONDA_ENV_NAME="musim"
+VENV_PATH="${REPO_ROOT}/phys3888"
+CONDA_ENV_NAME="phys3888"
 
 # Detector location + zenith angle scan
 # ---------------------------------------

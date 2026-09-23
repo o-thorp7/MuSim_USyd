@@ -1,16 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Submits one Slurm job per density_era5_hires_*.pkl file, running
 # make_slice_spline.py and writing a uniquely-named output spline.
 #
 # Usage:
-#   ./submit_spline_jobs.sh
+#   ./submit_spline_jobs.sh config/conda_test.sh
 #
 
 set -euo pipefail
 
+# Get config file from first argument, default to config/default.sh
+CONFIG_FILE="${1:-config/default.sh}"
+
+if [[ ! -f "${CONFIG_FILE}" ]]; then
+    echo "Error: Config file not found: ${CONFIG_FILE}" >&2
+    exit 1
+fi
+
 # Load configuration
-. config.sh
+. "${CONFIG_FILE}"
 
 # Set directories for this pipeline stage
 INPUT_DIR="${DENSITY_DIR}/era5_hires"
@@ -53,10 +61,11 @@ for f in "${FILES[@]}"; do
 
     if [[ "${RUN_MODE}" == "local" ]]; then
         echo "Running locally: submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}"
-        bash submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
+        CONFIG_FILE="${CONFIG_FILE}" bash submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
     else
         sbatch "${ACCOUNT_FLAG[@]}" --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" \
             --output="${LOG_DIR}/${jobname}_%j.out" --error="${LOG_DIR}/${jobname}_%j.err" \
+            --export=CONFIG_FILE="${CONFIG_FILE}" \
             submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}
     fi
 done
