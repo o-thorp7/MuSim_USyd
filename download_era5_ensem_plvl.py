@@ -4,6 +4,8 @@ import cdsapi
 import numpy as np
 import datetime
 import sys
+import os
+from pathlib import Path
 
 # Date to request
 date = datetime.datetime.strptime( sys.argv[1], '%Y%m%d%H%M')
@@ -13,6 +15,14 @@ max_lat=float( sys.argv[2] )
 min_lat=float( sys.argv[3] )
 max_lon=float( sys.argv[4] )
 min_lon=float( sys.argv[5] )
+
+
+# Determine output directory from environment, create if needed
+raw_dir = Path(os.environ.get('ERA5_RAW_DIR', '.')) / 'era5_ensem_plvl'
+raw_dir.mkdir(parents=True, exist_ok=True)
+
+# Construct output filename
+outfile = raw_dir / ('era5_ensem_plvl_' + date.strftime('%Y-%m-%d_%H') + 'UTC.nc')
 
 c = cdsapi.Client()
 
@@ -31,8 +41,7 @@ c.retrieve(
         'year': date.strftime('%Y'),
         'month': date.strftime( '%m' ),
         'day': date.strftime( '%d' ),
-        'area': [max_lat, min_lon, min_lat, max_lon],# N, W, S, E
+        'area': [max_lat, min_lon, min_lat, max_lon],
         'time': date.strftime( '%H' )
-        },
-   'era5_ensem_plvl_' + date.strftime('%Y-%m-%d_%H')+'UTC.nc'
-)
+    },
+    str(outfile))

@@ -4,26 +4,20 @@
 # make_slice_spline.py and writing a uniquely-named output spline.
 #
 # Usage:
-#   ./submit_splines.sh
+#   ./submit_spline_jobs.sh
 #
-# Adjust LON, LAT, and the sbatch resource flags as needed.
 
 set -euo pipefail
 
-# --- Fixed arguments for every job ---
-LON=151.1873
-LAT=-33.8886
+# Load configuration
+. config.sh
 
-# --- Directories ---
-INPUT_DIR="."          # where the .pkl files live
-OUTPUT_DIR="splines"   # where the .npy outputs go
-mkdir -p "${OUTPUT_DIR}"
+# Set directories for this pipeline stage
+INPUT_DIR="${DENSITY_DIR}/era5_hires"
+OUTPUT_DIR="${SPLINE_DIR}"
 
-# --- Slurm resource settings (edit to match your cluster) ---
-TIME="00:30:00"
-MEM="4G"
-CPUS=1
-OSC_ACC=PAS2635
+# Create output and log directories
+mkdir -p "${OUTPUT_DIR}" "${LOG_DIR}"
 
 # Match files like: density_era5_hires_2026-06-09_03UTC.pkl
 shopt -s nullglob
@@ -33,6 +27,12 @@ shopt -u nullglob
 if [ ${#FILES[@]} -eq 0 ]; then
     echo "No matching .pkl files found in ${INPUT_DIR}" >&2
     exit 1
+fi
+
+# Build account flag only if PROJECT_CODE is non-empty
+ACCOUNT_FLAG=()
+if [[ -n "${PROJECT_CODE}" ]]; then
+    ACCOUNT_FLAG=(--account="${PROJECT_CODE}")
 fi
 
 for f in "${FILES[@]}"; do
@@ -51,5 +51,12 @@ for f in "${FILES[@]}"; do
 
     echo "Submitting job for ${fname} -> ${outfile}"
 
-    sbatch --account=$OSC_ACC --output="logs/${jobname}_%j.out" --error="logs/${jobname}_%j.err" submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}
+    if [[ "${RUN_MODE}" == "local" ]]; then
+        echo "Running locally: submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}"
+        bash submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
+    else
+        sbatch "${ACCOUNT_FLAG[@]}" --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" \
+            --output="${LOG_DIR}/${jobname}_%j.out" --error="${LOG_DIR}/${jobname}_%j.err" \
+            submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}
+    fi
 done

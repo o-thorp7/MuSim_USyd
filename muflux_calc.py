@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
 from MCEq.geometry.density_profiles import *
 import numpy as np
 
@@ -10,6 +8,8 @@ import crflux.models as pm
 
 from scipy import interpolate
 import sys
+import os
+from pathlib import Path
 
 from scipy import stats
 import geopy.distance
@@ -87,7 +87,7 @@ print("these are my args", sys.argv)
 this_fpath = str(sys.argv[1])
 this_theta = float(sys.argv[2])
 #simnum = int(sys.argv[1])
-outpath = str(sys.argv[3])
+outpath = Path(str(sys.argv[3]))
 #this_fpath = outpath+'/splines/avg_spline_%s.npy'%(str(simnum).zfill(5))
 #this_fpath = '/users/PAS0654/wluszczak/ensda/splines/avg_spline_%s.npy'%(str(simnum).zfill(5))
 print("this_fpath", this_fpath)
@@ -98,10 +98,7 @@ t_atmosphere = TestAtmosphere("USStd", None, fpath=this_fpath)
 
 print("Defining run")
 mceq_run = MCEqRun(
-        # added by oli
         interaction_model='SIBYLL23E',
-        #
-        # interaction_model='SIBYLL2.3c',
         primary_model=(pm.HillasGaisser2012, "H3a"),
         theta_deg=0.
         )
@@ -110,9 +107,14 @@ mceq_run.set_density_model(t_atmosphere)
 #mceq_run.set_density_model(regc_atmosphere)
 e_grid = mceq_run.e_grid
 
-# added by oli
-np.save("egrid.npy", e_grid)
-#
+# Save egrid with job-unique ID so concurrent jobs don't clobber each other
+# egrid_id = os.environ.get('SLURM_JOB_ID', str(os.getpid()))
+egrid_outfile = outpath.parent / 'egrid.npy'
+if not egrid_outfile.exists():
+    np.save(egrid_outfile, e_grid)
+    print(f"Saved egrid to {egrid_outfile}")
+else:
+    print(f"egrid already exists at {egrid_outfile}, skipping save")
 
 eints = []
 thetas = [this_theta]

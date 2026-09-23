@@ -1,10 +1,11 @@
 ''' Script to request for ERA-5 reanalysis data within a limited area for a limited time '''
 
-#import cdsapi
 from cdsapi import Client
 import numpy as np
 import datetime
 import sys
+import os
+from pathlib import Path
 
 # Date to request
 date = datetime.datetime.strptime( sys.argv[1], '%Y%m%d%H%M')
@@ -15,6 +16,13 @@ min_lat=float( sys.argv[3] )
 max_lon=float( sys.argv[4] )
 min_lon=float( sys.argv[5] )
 
+
+# Determine output directory from environment, create if needed
+raw_dir = Path(os.environ.get('ERA5_RAW_DIR', '.')) / 'era5_ensem_land'
+raw_dir.mkdir(parents=True, exist_ok=True)
+
+# Construct output filename
+outfile = raw_dir / ('era5_ensem_land_' + date.strftime('%Y-%m-%d_%H') + 'UTC.nc')
 
 c = Client()
 
@@ -31,4 +39,4 @@ c.retrieve(
         'day': date.strftime('%d'),
         'time': date.strftime('%H')
     },
-    'era5_ensem_land_' + date.strftime('%Y-%m-%d_%H')+'UTC.nc')
+    str(outfile))

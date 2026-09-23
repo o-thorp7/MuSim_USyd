@@ -9,6 +9,8 @@ from sys import argv
 from datetime import datetime, timedelta
 from copy import deepcopy
 import pickle
+import os
+from pathlib import Path
 
 
 
@@ -20,6 +22,9 @@ date_st = datetime.strptime( argv[1], '%Y%m%d%H%M' )
 date_ed = datetime.strptime( argv[2], '%Y%m%d%H%M' )
 time_interval = timedelta( minutes = int(argv[3] ) )
 
+# Get directories from environment
+RAW_DIR = Path(os.environ.get('ERA5_RAW_DIR', '.'))
+DENSITY_DIR = Path(os.environ.get('ERA5_DENSITY_DIR', '.'))
 
 # ERA5 file prefixes to process
 era5_prefix_list = [ 'era5_ensem', 'era5_hires']
@@ -66,10 +71,12 @@ def compute_density_from_era5_file( file_prefix, ztype_dict, date_targ ):
     # Open NetCDF files
     file_dict = {}
     for ztype in ['land','plvl']:
-        fname = date_targ.strftime(
+        # Build path: RAW_DIR/era5_hires_land/era5_hires_land_2026-06-09_00UTC.nc
+        subdir = RAW_DIR / f"{file_prefix}_{ztype}"
+        fname = subdir / date_targ.strftime(
             file_prefix+"_"+ztype_dict[ztype]+"_%Y-%m-%d_%HUTC.nc"
         )
-        file_dict[ztype+' fhandle'] = ncopen( fname, 'r' )
+        file_dict[ztype+' fhandle'] = ncopen( str(fname), 'r' )
     # --- End of loop over data types
 
 
@@ -180,7 +187,11 @@ for pfx in era5_prefix_list:
         density_data_dict = compute_density_from_era5_file( pfx, era5_ztype_dict, date_nw )
 
         # Output data as pickle file
-        outfname = date_nw.strftime(
+        # Create subdirectory if needed
+        out_subdir = DENSITY_DIR / pfx
+        out_subdir.mkdir(parents=True, exist_ok=True)
+        
+        outfname = out_subdir / date_nw.strftime(
             'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
         )
         with open( outfname, 'wb') as f:
@@ -188,7 +199,6 @@ for pfx in era5_prefix_list:
         # --- end of pickle dump process
     # --- End of loop over ERA5 prefixes
 # --- End of loop over dates
-
 
 
 
@@ -239,4 +249,3 @@ for i0 in range(2):
 
 plt.tight_layout()
 plt.savefig('demo_air_density.png')
-

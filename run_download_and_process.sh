@@ -8,6 +8,17 @@
 # Load configuration
 . config.sh
 
+# Environment setup (needed because sbatch shells don't source ~/.bashrc)
+if [[ "${ENV_TYPE}" == "venv" ]]; then
+    source "${VENV_PATH}/bin/activate"
+elif [[ "${ENV_TYPE}" == "conda" ]]; then
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate "${CONDA_ENV_NAME}"
+fi
+
+# Create output directories
+mkdir -p "${LOG_DIR}" "${ERA5_RAW_DIR}" "${ERA5_DENSITY_DIR}" "${SPLINE_DIR}" "${MUFLUX_DIR}"
+
 
 # Function to increment time
 # --------------------------
@@ -47,7 +58,7 @@ echo Starting to run downloads
 
 # Loop over scripts to run
 for script in $download_script_list; do
-    logfile=log.${script::-3}
+    logfile="${LOG_DIR}/log.${script::-3}"
     echo Running $script
     request_date_loop $script >& $logfile &
 done
