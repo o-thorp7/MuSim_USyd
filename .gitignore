@@ -2,4 +2,5 @@
 *.npy
 *.pkl
 log*
+.vscode/
 .DS_Store
