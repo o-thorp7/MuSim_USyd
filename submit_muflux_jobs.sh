@@ -61,10 +61,10 @@ for f in "${FILES[@]}"; do
         outfile="${OUTPUT_DIR}/muflux_${timestamp}_${th}.npy"
         jobname="muflux_${timestamp}_${th}"
 
-        echo "Submitting job for ${fname} theta=${th} -> ${outfile}"
+        echo -e "Submitting job for ${fname} ->\n${outfile}\n"
 
         if [[ "${RUN_MODE}" == "local" ]]; then
-            echo "Running locally: submit_muflux_calc.sh ${f} ${th} ${outfile}"
+            echo -e "Running locally: submit_slice_spline.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
             CONFIG_FILE="${CONFIG_FILE}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
             PIDS+=("$!")
         else
@@ -79,12 +79,12 @@ done
 
 if [[ "${RUN_MODE}" == "local" ]]; then
     printf '%s\n' "${PIDS[@]}" > "${LOG_DIR}/muflux.pids"
-    echo "Started ${#PIDS[@]} muflux job(s) in background. PIDs saved to ${LOG_DIR}/muflux.pids"
-    echo "To stop all: kill \$(cat ${LOG_DIR}/muflux.pids)"
-    echo "To check if still running: jobs -l   (or: ps -p \$(paste -sd, ${LOG_DIR}/muflux.pids))"
+    echo -e "Started ${#PIDS[@]} muflux job(s) in background. PIDs saved to ${LOG_DIR}/muflux.pids\n"
+    echo -e "To stop all: kill \$(cat ${LOG_DIR}/muflux.pids)\n"
+    echo "To check if still running: ps -fp \$(cat ${LOG_DIR}/muflux.pids)"
 else
     printf '%s\n' "${JOBIDS[@]}" > "${LOG_DIR}/muflux.jobids"
-    echo "Submitted ${#JOBIDS[@]} Slurm job(s). IDs saved to ${LOG_DIR}/muflux.jobids"
-    echo "To stop all: scancel \$(cat ${LOG_DIR}/muflux.jobids)"
+    echo -e "Submitted ${#JOBIDS[@]} Slurm job(s). IDs saved to ${LOG_DIR}/muflux.jobids\n"
+    echo -e "To stop all: scancel \$(cat ${LOG_DIR}/muflux.jobids)\n"
     echo "To check progress: squeue -u \$USER"
 fi

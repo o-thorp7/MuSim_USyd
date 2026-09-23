@@ -28,11 +28,8 @@ fi
 # Create output directories
 mkdir -p "${LOG_DIR}" "${RAW_DIR}" "${DENSITY_DIR}" "${SPLINE_DIR}" "${MUFLUX_DIR}"
 
-# Kill all background jobs spawned by this script if interrupted
-trap 'echo "Interrupted — killing all download/processing jobs for this run..."; kill 0; exit 1' INT TERM
-
 # Function to increment time
---------------------------
+# --------------------------
 function advance_time {
   ccyymmdd=`echo $1 |cut -c1-8`
   hh=`echo $1 |cut -c9-10`

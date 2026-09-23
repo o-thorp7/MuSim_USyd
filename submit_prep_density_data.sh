@@ -31,7 +31,7 @@ if [[ "${RUN_MODE}" == "local" ]]; then
     CONFIG_FILE="${CONFIG_FILE}" bash run_download_and_process.sh >& "${LOG_DIR}/log.run_download_and_process" &
     echo $! > "${LOG_DIR}/prep.pid"
     echo "Started in background. PID: $(cat "${LOG_DIR}/prep.pid")"
-    echo "To stop: kill \$(cat ${LOG_DIR}/prep.pid)"
+    echo "To stop: kill $(cat ${LOG_DIR}/prep.pid)"
     echo "To check progress: tail -f ${LOG_DIR}/log.run_download_and_process"
 else
     echo "Submitting run_download_and_process.sh to Slurm with config: ${CONFIG_FILE}"

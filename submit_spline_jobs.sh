@@ -60,10 +60,10 @@ for f in "${FILES[@]}"; do
     outfile="${OUTPUT_DIR}/avg_spline_${timestamp}.npy"
     jobname="spline_${timestamp}"
 
-    echo "Submitting job for ${fname} -> ${outfile}"
+    echo -e "Submitting job for ${fname} ->\n${outfile}\n"
 
     if [[ "${RUN_MODE}" == "local" ]]; then
-        echo "Running locally: submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}"
+        echo -e "Running locally: submit_slice_spline.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
         CONFIG_FILE="${CONFIG_FILE}" bash submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
         PIDS+=("$!")
     else
@@ -77,12 +77,12 @@ done
 
 if [[ "${RUN_MODE}" == "local" ]]; then
     printf '%s\n' "${PIDS[@]}" > "${LOG_DIR}/spline.pids"
-    echo "Started ${#PIDS[@]} spline job(s) in background. PIDs saved to ${LOG_DIR}/spline.pids"
-    echo "To stop all: kill \$(cat ${LOG_DIR}/spline.pids)"
-    echo "To check if still running: jobs -l   (or: ps -p \$(paste -sd, ${LOG_DIR}/spline.pids))"
+    echo -e "Started ${#PIDS[@]} spline job(s) in background. PIDs saved to ${LOG_DIR}/spline.pids\n"
+    echo -e "To stop all: kill \$(cat ${LOG_DIR}/spline.pids)\n"
+    echo "To check if still running: ps -fp \$(cat ${LOG_DIR}/spline.pids)"
 else
     printf '%s\n' "${JOBIDS[@]}" > "${LOG_DIR}/spline.jobids"
-    echo "Submitted ${#JOBIDS[@]} Slurm job(s). IDs saved to ${LOG_DIR}/spline.jobids"
-    echo "To stop all: scancel \$(cat ${LOG_DIR}/spline.jobids)"
+    echo -e "Submitted ${#JOBIDS[@]} Slurm job(s). IDs saved to ${LOG_DIR}/spline.jobids\n"
+    echo -e "To stop all: scancel \$(cat ${LOG_DIR}/spline.jobids)\n"
     echo "To check progress: squeue -u \$USER"
 fi
