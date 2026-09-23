@@ -23,8 +23,8 @@ date_ed = datetime.strptime( argv[2], '%Y%m%d%H%M' )
 time_interval = timedelta( minutes = int(argv[3] ) )
 
 # Get directories from environment
-RAW_DIR = Path(os.environ.get('ERA5_RAW_DIR', '.'))
-DENSITY_DIR = Path(os.environ.get('ERA5_DENSITY_DIR', '.'))
+RAW_DIR = Path(os.environ.get('RAW_DIR', '.'))
+DENSITY_DIR = Path(os.environ.get('DENSITY_DIR', '.'))
 
 # ERA5 file prefixes to process
 era5_prefix_list = [ 'era5_ensem', 'era5_hires']
@@ -248,4 +248,4 @@ for i0 in range(2):
     plt.colorbar( cnf, ax = ax )
 
 plt.tight_layout()
-plt.savefig('demo_air_density.png')
+plt.savefig(DENSITY_DIR.parent / 'demo_air_density.png')

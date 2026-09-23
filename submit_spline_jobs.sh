@@ -43,6 +43,9 @@ if [[ -n "${PROJECT_CODE}" ]]; then
     ACCOUNT_FLAG=(--account="${PROJECT_CODE}")
 fi
 
+PIDS=()
+JOBIDS=()
+
 for f in "${FILES[@]}"; do
     fname=$(basename "${f}")
 
@@ -62,10 +65,24 @@ for f in "${FILES[@]}"; do
     if [[ "${RUN_MODE}" == "local" ]]; then
         echo "Running locally: submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}"
         CONFIG_FILE="${CONFIG_FILE}" bash submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
+        PIDS+=("$!")
     else
-        sbatch "${ACCOUNT_FLAG[@]}" --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" \
+        jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" \
             --output="${LOG_DIR}/${jobname}_%j.out" --error="${LOG_DIR}/${jobname}_%j.err" \
             --export=CONFIG_FILE="${CONFIG_FILE}" \
-            submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}
+            submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile})
+        JOBIDS+=("${jid}")
     fi
 done
+
+if [[ "${RUN_MODE}" == "local" ]]; then
+    printf '%s\n' "${PIDS[@]}" > "${LOG_DIR}/spline.pids"
+    echo "Started ${#PIDS[@]} spline job(s) in background. PIDs saved to ${LOG_DIR}/spline.pids"
+    echo "To stop all: kill \$(cat ${LOG_DIR}/spline.pids)"
+    echo "To check if still running: jobs -l   (or: ps -p \$(paste -sd, ${LOG_DIR}/spline.pids))"
+else
+    printf '%s\n' "${JOBIDS[@]}" > "${LOG_DIR}/spline.jobids"
+    echo "Submitted ${#JOBIDS[@]} Slurm job(s). IDs saved to ${LOG_DIR}/spline.jobids"
+    echo "To stop all: scancel \$(cat ${LOG_DIR}/spline.jobids)"
+    echo "To check progress: squeue -u \$USER"
+fi

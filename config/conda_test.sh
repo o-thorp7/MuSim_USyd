@@ -68,19 +68,19 @@ THETA_STEP=5
 # Output directories (all derived from BASE_DIR)
 # -----------------------------------------------
 LOG_DIR="${BASE_DIR}/logs"
-ERA5_RAW_DIR="${BASE_DIR}/raw"
-ERA5_DENSITY_DIR="${BASE_DIR}/density"
+RAW_DIR="${BASE_DIR}/raw"
+DENSITY_DIR="${BASE_DIR}/density"
 SPLINE_DIR="${BASE_DIR}/splines"
 MUFLUX_DIR="${BASE_DIR}/mufluxes"
 
 # Export for use by Python scripts
-export ERA5_RAW_DIR ERA5_DENSITY_DIR THETA_MIN THETA_MAX THETA_STEP
+export RAW_DIR DENSITY_DIR THETA_MIN THETA_MAX THETA_STEP
 
 # ... Your script variables are defined above here ...
 
 # for fpath_name in \
 #     "CONFIG_NAME" "CONFIG_DIR" "REPO_ROOT" "BASE_DIR" "LOG_DIR" \
-#     "ERA5_RAW_DIR" "ERA5_DENSITY_DIR" "SPLINE_DIR" "MUFLUX_DIR" \
+#     "RAW_DIR" "DENSITY_DIR" "SPLINE_DIR" "MUFLUX_DIR" \
 #     "VENV_PATH" \
 # ; do
 #     echo "${fpath_name}: ${!fpath_name}"

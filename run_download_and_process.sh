@@ -26,8 +26,10 @@ elif [[ "${ENV_TYPE}" == "conda" ]]; then
 fi
 
 # Create output directories
-mkdir -p "${LOG_DIR}" "${ERA5_RAW_DIR}" "${ERA5_DENSITY_DIR}" "${SPLINE_DIR}" "${MUFLUX_DIR}"
+mkdir -p "${LOG_DIR}" "${RAW_DIR}" "${DENSITY_DIR}" "${SPLINE_DIR}" "${MUFLUX_DIR}"
 
+# Kill all background jobs spawned by this script if interrupted
+trap 'echo "Interrupted — killing all download/processing jobs for this run..."; kill 0; exit 1' INT TERM
 
 # Function to increment time
 --------------------------

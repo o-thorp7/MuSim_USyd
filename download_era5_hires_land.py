@@ -18,7 +18,7 @@ min_lon=float( sys.argv[5] )
 
 
 # Determine output directory from environment, create if needed
-raw_dir = Path(os.environ.get('ERA5_RAW_DIR', '.')) / 'era5_hires_land'
+raw_dir = Path(os.environ.get('RAW_DIR', '.')) / 'era5_hires_land'
 raw_dir.mkdir(parents=True, exist_ok=True)
 
 # Construct output filename
