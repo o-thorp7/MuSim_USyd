@@ -8,7 +8,6 @@ import os
 from pathlib import Path
 
 # Date to request
-print(sys.argv[1])
 date = datetime.datetime.strptime( sys.argv[1], '%Y%m%d%H%M')
 
 # Read in lat-lon range of data to request

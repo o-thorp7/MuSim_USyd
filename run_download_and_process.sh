@@ -30,7 +30,7 @@ mkdir -p "${LOG_DIR}" "${ERA5_RAW_DIR}" "${ERA5_DENSITY_DIR}" "${SPLINE_DIR}" "$
 
 
 # Function to increment time
-# --------------------------
+--------------------------
 function advance_time {
   ccyymmdd=`echo $1 |cut -c1-8`
   hh=`echo $1 |cut -c9-10`
@@ -38,6 +38,14 @@ function advance_time {
   inc=$2
   date -u -d $inc' minutes '$ccyymmdd' '$hh':'$mm +%Y%m%d%H%M
 }
+#TODO: check if this works
+# function advance_time {
+#   python -c "from datetime import datetime, timedelta; 
+#   print(
+#     (datetime.strptime('$1', '%Y%m%d%H%M') + 
+#     timedelta(minutes=$2)).strftime('%Y%m%d%H%M')
+#   )"
+# }
 
 
 # Function to loop over times requested
