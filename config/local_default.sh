@@ -8,7 +8,7 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202606091200    # Last date of interest # eventually change to 202607230000
+date_ed=202607230000    # Last date of interest # eventually change to 202607230000
 time_interval=180       # Number of minutes between files to download
 
 
@@ -40,7 +40,7 @@ BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
-RUN_MODE="sbatch"
+RUN_MODE="local"
 
 # Slurm account / resources
 # --------------------------
