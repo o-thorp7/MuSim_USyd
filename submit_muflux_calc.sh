@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#SBATCH --mem=1gb          # Default fall-back directive values in case command-line flags fail
+#SBATCH --time=00:15:00
 
 # Get config file from environment variable (set by sbatch --export)
 # or from first argument (if run locally), default to config/default.sh
@@ -16,13 +18,9 @@ fi
 if [[ "${ENV_TYPE}" == "venv" ]]; then
     source "${VENV_PATH}/bin/activate"
 elif [[ "${ENV_TYPE}" == "conda" ]]; then
-    source "$(conda info --base)/etc/profile.d/conda.sh"
+    source "${CONDA_BASE_PATH}/etc/profile.d/conda.sh"
     conda activate "${CONDA_ENV_NAME}"
 fi
-
-#SBATCH --job-name=muflux_calc_$1_$2
-#SBATCH --mem=5gb
-#SBATCH --time=1:00:00
 
 echo "starting muflux calc" $1 $2
 python3 muflux_calc.py $1 $2 $3

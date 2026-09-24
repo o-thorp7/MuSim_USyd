@@ -8,7 +8,7 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202606091200    # Last date of interest # eventually change to 202607230000
+date_ed=202606091200    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 
@@ -76,3 +76,16 @@ MUFLUX_DIR="${BASE_DIR}/mufluxes"
 
 # Export for use by Python scripts
 export RAW_DIR DENSITY_DIR THETA_MIN THETA_MAX THETA_STEP
+
+# ... Your script variables are defined above here ...
+
+# for fpath_name in \
+#     "CONFIG_NAME" "CONFIG_DIR" "REPO_ROOT" "BASE_DIR" "LOG_DIR" \
+#     "RAW_DIR" "DENSITY_DIR" "SPLINE_DIR" "MUFLUX_DIR" \
+#     "VENV_PATH" \
+# ; do
+#     echo "${fpath_name}: ${!fpath_name}"
+    
+#     # mkdir -p "${!fpath_name}"
+# done
+

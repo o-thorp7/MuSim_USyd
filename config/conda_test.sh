@@ -42,7 +42,7 @@ RUN_MODE="local"
 
 # Slurm account / resources
 # --------------------------
-PROJECT_CODE=""            # e.g. "highen" — leave blank if not required
+PROJECT_CODE="PAS2635"
 PREP_NTASKS=4
 PREP_NNODES=1
 PREP_TIME="01:00:00"
@@ -54,8 +54,9 @@ MUFLUX_MEM="5G"
 # Python environment
 # -------------------
 ENV_TYPE="conda"             # "venv" or "conda"
-VENV_PATH="${REPO_ROOT}/phys3888"
-CONDA_ENV_NAME="phys3888"
+VENV_PATH="${REPO_ROOT}/isp_venv"
+CONDA_ENV_NAME="isp"
+CONDA_BASE_PATH="${HOME}/miniconda3"
 
 # Detector location + zenith angle scan
 # ---------------------------------------

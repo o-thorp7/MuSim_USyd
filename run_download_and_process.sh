@@ -21,7 +21,7 @@ fi
 if [[ "${ENV_TYPE}" == "venv" ]]; then
     source "${VENV_PATH}/bin/activate"
 elif [[ "${ENV_TYPE}" == "conda" ]]; then
-    source "$(conda info --base)/etc/profile.d/conda.sh"
+    source "${CONDA_BASE_PATH}/etc/profile.d/conda.sh"
     conda activate "${CONDA_ENV_NAME}"
 fi
 

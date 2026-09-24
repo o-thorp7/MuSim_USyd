@@ -64,13 +64,13 @@ for f in "${FILES[@]}"; do
         echo -e "Submitting job for ${fname} ->\n${outfile}\n"
 
         if [[ "${RUN_MODE}" == "local" ]]; then
-            echo -e "Running locally: submit_slice_spline.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
+            echo -e "Running locally: submit_muflux_calc.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
             CONFIG_FILE="${CONFIG_FILE}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
             PIDS+=("$!")
         else
-            jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --mem="${MUFLUX_MEM}" --time="${MUFLUX_TIME}" \
-                --output="${LOG_DIR}/${jobname}_%j.out" --error="${LOG_DIR}/${jobname}_%j.err" \
-                --export=CONFIG_FILE="${CONFIG_FILE}" \
+            jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --job-name="${jobname}" \
+                --mem="${MUFLUX_MEM}" --time="${MUFLUX_TIME}" --output="${LOG_DIR}/${jobname}_%j.out" \
+                --error="${LOG_DIR}/${jobname}_%j.err" --export=CONFIG_FILE="${CONFIG_FILE}" \
                 submit_muflux_calc.sh ${f} ${th} ${outfile})
             JOBIDS+=("${jid}")
         fi

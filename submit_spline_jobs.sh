@@ -67,9 +67,9 @@ for f in "${FILES[@]}"; do
         CONFIG_FILE="${CONFIG_FILE}" bash submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
         PIDS+=("$!")
     else
-        jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" \
-            --output="${LOG_DIR}/${jobname}_%j.out" --error="${LOG_DIR}/${jobname}_%j.err" \
-            --export=CONFIG_FILE="${CONFIG_FILE}" \
+        jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --job-name="${jobname}" \
+            --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" --output="${LOG_DIR}/${jobname}_%j.out" \
+            --error="${LOG_DIR}/${jobname}_%j.err" --export=CONFIG_FILE="${CONFIG_FILE}" \
             submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile})
         JOBIDS+=("${jid}")
     fi
