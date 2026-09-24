@@ -23,22 +23,28 @@ The muon flux as a function of zenith is then integrated to arrive at an estimat
 ## Setup / Instructions 
 
 1. Set up [CDS Api](https://cds.climate.copernicus.eu/how-to-api)
+
 2. Activate virtual environment 
 ```
 source isp_venv/bin/activate
 ```
 or
 ```
-load_conda
+load_conda <!-- or --> source ~/miniconda3/etc/profile.d/conda.sh 
 conda activate isp
 ```
 Note: `load_conda` is defined in `~/.bashrc` as `alias load_conda='eval "$(/users/PAS2635/otho7246/miniconda3/bin/conda shell.bash hook)"'`
+
 3. Install/check packages: (note, the last three packages must be installed with pip, not conda)
+
 ```
 pip install numpy matplotlib geopy scipy pandas netcdf4 mceq "cdsapi>=0.7.7"
 ```
+
 4. Set up config file accordingly (in `config/`)
+
 5. Run scripts: (leaving `<path_to_config>` blank defaults to `config/default.sh`)
+
 ```
 ./submit_prep_density_data.sh <path_to_config>
 ./submit_spline_jobs.sh <path_to_config>
@@ -46,7 +52,7 @@ pip install numpy matplotlib geopy scipy pandas netcdf4 mceq "cdsapi>=0.7.7"
 ./combine_muflux_files.sh <path_to_config>
 ./extract_psfc_muflux.sh <path_to_config>
 ```
-7. Use `plot_output.ipynb` to visualize summary
+6. Use `plot_output.ipynb` to visualize summary
 
 
 ## About the Output Density Data

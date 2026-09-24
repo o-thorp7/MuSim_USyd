@@ -8,7 +8,7 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202607230000    # Last date of interest # eventually change to 202607230000
+date_ed=202606091200    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 
@@ -40,22 +40,22 @@ BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
-RUN_MODE="local"
+RUN_MODE="sbatch"
 
 # Slurm account / resources
 # --------------------------
 PROJECT_CODE="PAS2635"
 PREP_NTASKS=4
 PREP_NNODES=1
-PREP_TIME="01:00:00"
-SPLINE_TIME="04:00:00"
-SPLINE_MEM="10G"
-MUFLUX_TIME="01:00:00"
-MUFLUX_MEM="5G"
+PREP_TIME="00:05:00"
+SPLINE_TIME="00:15:00"
+SPLINE_MEM="1G"
+MUFLUX_TIME="00:25:00"
+MUFLUX_MEM="1G"
 
 # Python environment
 # -------------------
-ENV_TYPE="venv"             # "venv" or "conda"
+ENV_TYPE="conda"             # "venv" or "conda"
 VENV_PATH="${REPO_ROOT}/isp_venv"
 CONDA_ENV_NAME="isp"
 CONDA_BASE_PATH="${HOME}/miniconda3"
@@ -78,3 +78,16 @@ MUFLUX_DIR="${BASE_DIR}/mufluxes"
 
 # Export for use by Python scripts
 export RAW_DIR DENSITY_DIR THETA_MIN THETA_MAX THETA_STEP
+
+# ... Your script variables are defined above here ...
+
+# for fpath_name in \
+#     "CONFIG_NAME" "CONFIG_DIR" "REPO_ROOT" "BASE_DIR" "LOG_DIR" \
+#     "RAW_DIR" "DENSITY_DIR" "SPLINE_DIR" "MUFLUX_DIR" \
+#     "VENV_PATH" \
+# ; do
+#     echo "${fpath_name}: ${!fpath_name}"
+    
+#     # mkdir -p "${!fpath_name}"
+# done
+
