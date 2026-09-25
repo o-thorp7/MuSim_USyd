@@ -25,6 +25,9 @@ elif [[ "${ENV_TYPE}" == "conda" ]]; then
     conda activate "${CONDA_ENV_NAME}"
 fi
 
+echo "python location: "
+which python
+
 # Create output directories
 mkdir -p "${LOG_DIR}" "${RAW_DIR}" "${DENSITY_DIR}" "${SPLINE_DIR}" "${MUFLUX_DIR}"
 

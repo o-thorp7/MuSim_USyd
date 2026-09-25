@@ -70,7 +70,8 @@ for f in "${FILES[@]}"; do
         jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --job-name="${jobname}" \
             --mem="${SPLINE_MEM}" --time="${SPLINE_TIME}" --output="${LOG_DIR}/${jobname}_%j.out" \
             --error="${LOG_DIR}/${jobname}_%j.err" --export=CONFIG_FILE="${CONFIG_FILE}" \
-            submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile})
+            submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}) \
+            --cpus-per-task="${SPLINE_NCPUS}" \
         JOBIDS+=("${jid}")
     fi
 done

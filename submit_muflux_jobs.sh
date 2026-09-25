@@ -71,6 +71,7 @@ for f in "${FILES[@]}"; do
             jid=$(sbatch --parsable ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} --job-name="${jobname}" \
                 --mem="${MUFLUX_MEM}" --time="${MUFLUX_TIME}" --output="${LOG_DIR}/${jobname}_%j.out" \
                 --error="${LOG_DIR}/${jobname}_%j.err" --export=CONFIG_FILE="${CONFIG_FILE}" \
+                --cpus-per-task="${MUFLUX_NCPUS}" \
                 submit_muflux_calc.sh ${f} ${th} ${outfile})
             JOBIDS+=("${jid}")
         fi
