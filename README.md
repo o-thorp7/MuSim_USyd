@@ -52,7 +52,18 @@ pip install numpy matplotlib geopy scipy pandas netcdf4 mceq "cdsapi>=0.7.7"
 ./combine_muflux_files.sh <path_to_config>
 ./extract_psfc_muflux.sh <path_to_config>
 ```
+
 6. Use `plot_output.ipynb` to visualize summary
+
+To see job history details since `<date>` (`YYYY-MM-DD` format), including job ID, job name, start date/time, elapsed computational time, max time allocation, maximum memory actually used by any single task in the job, memory requested, and job status (respectively), run
+```
+sacct -S <date> -u $USER --format=JobID,JobName,Start,Elapsed,Timelimit,MaxRSS,ReqMem,State
+```
+or to save it to an outfile under `summary/` (with `<date>` defaulting to today) and any additional parameters `<more format words>`, run
+```
+./save_job_stats.sh <path_to_config> <date> <more format words>
+```
+
 
 
 ## About the Output Density Data

@@ -8,7 +8,7 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202606091200    # Last date of interest
+date_ed=202606100000    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 
@@ -49,9 +49,9 @@ PREP_NTASKS=4
 PREP_NNODES=1
 SPLINE_NCPUS=4
 MUFLUX_NCPUS=4
-PREP_TIME="00:05:00"
+PREP_TIME="00:10:00"
 SPLINE_TIME="00:25:00"
-SPLINE_MEM="5G"
+SPLINE_MEM="10G"
 MUFLUX_TIME="00:35:00"
 MUFLUX_MEM="5G"
 
