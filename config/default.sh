@@ -46,7 +46,7 @@ RUN_MODE="sbatch"
 # --------------------------
 PROJECT_CODE="PAS2635"
 PREP_NTASKS=4 
-PREP_NNODES=1
+PREP_NNODES=1 #TODO: make sure all of these are being passed in (and have default fallback directive values)
 SPLINE_NTASKS=4
 SPLINE_NCPUS=1
 SPLINE_NNODES=1
