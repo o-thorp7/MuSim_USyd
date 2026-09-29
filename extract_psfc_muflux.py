@@ -23,7 +23,6 @@ output_dir.mkdir(parents=True, exist_ok=True)
 
 
 
-# folder = Path("local_venv_test_results/density/era5_ensem/")
 psfc_files = sorted(glob.glob(str(density_dir / "*.pkl")))
 comb_muflux_files = sorted(glob.glob(str(muflux_dir / "combined*.npy")))
 
@@ -52,9 +51,9 @@ for psfcfile in psfc_files:
     t = datetime.strptime(psfcfile[-20:-7], "%Y-%m-%d_%H")
 
     truthdata = pd.read_pickle(psfcfile)
-    psfc = truthdata['surface pressure'] #TODO: fix key error
-    londata = truthdata['longitude (deg E)']
-    latdata = truthdata['latitude (deg N)']
+    psfc = truthdata['psfc'] #TODO: use ens members to produce stats (e.g. variance)
+    londata = truthdata['lon']
+    latdata = truthdata['lat']
     print(np.min(londata), np.max(londata), (np.min(londata)+np.max(londata))/2)
     print(np.min(latdata), np.max(latdata), (np.min(latdata)+np.max(latdata))/2)
 

@@ -6,3 +6,4 @@ isp_venv/
 tests/output/
 log*
 .DS_Store
+!**/summary/**/*.npy

@@ -95,6 +95,7 @@ echo ""
 date
 echo Generating density fields from downloaded data
 
+#TODO: change date range and interval, then run many simultaneously using submit_prep_density_data
 python compute_era5_density.py  $date_st  $date_ed  $time_interval
 
 echo Finished generating density fields

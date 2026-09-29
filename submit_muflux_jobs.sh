@@ -57,6 +57,7 @@ for f in "${FILES[@]}"; do
         continue
     fi
 
+    #TODO: use one batch per time for all elevation angles?
     for th in $(seq ${THETA_MIN} ${THETA_STEP} ${THETA_MAX}); do
         outfile="${OUTPUT_DIR}/muflux_${timestamp}_${th}.npy"
         jobname="muflux_${timestamp}_${th}"

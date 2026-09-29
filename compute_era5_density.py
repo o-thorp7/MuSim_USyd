@@ -92,6 +92,7 @@ def compute_density_from_era5_file( file_prefix, ztype_dict, date_targ ):
     temp_in_K = np.swapaxes( temp_in_K, -3, -1)
     density_in_kgm3_on_plvls = compute_density( temp_in_K, pres_in_Pa, spechum_in_kgkg )
     density_in_kgm3_on_plvls = np.swapaxes( density_in_kgm3_on_plvls, -3, -1 )
+    temp_in_K = np.swapaxes( temp_in_K, -3, -1)
 
     # Geopotential heights on plvls
     altitude_in_m_on_plvls = np.squeeze( file_dict['plvl fhandle'].variables['z'] ) / 9.80665
@@ -164,10 +165,12 @@ def compute_density_from_era5_file( file_prefix, ztype_dict, date_targ ):
     out_dict['lon'] = {'info':'Array of longitudes in degrees East', 'units': 'degrees', 'data': lon1d}
     out_dict['lat'] = {'info':'Array of latitudes in degrees North', 'units': 'degrees', 'data': lat1d}
     out_dict['terrain'] = {'info': 'altitude of ground surface above mean sea level', 'units':'meters', 'data': altitude_in_m_on_land}
-    out_dict['altitude'] = {'info': 'altitude of density data above mean sea level', 'units':'meters', 'data': combined_altitude_in_m}
-    out_dict['air_density'] = {'info': 'Air density due to gaseous components', 'units':'kg/m3', 'data': combined_density_in_kgm3 }
+    out_dict['altitude'] = {'info': 'altitude of density data above mean sea level (altitude at const. pres level, lat, lon) for hires', 'units':'meters', 'data': combined_altitude_in_m}
+    out_dict['air_density'] = {'info': 'Air density due to gaseous components (altitude, lat, lon) if hires, or (est. num, altitude, lat, lon) if ens', 'units':'kg/m3', 'data': combined_density_in_kgm3 }
     out_dict['valid_points'] = {'info': 'True if at ground level or above ground. False if underground.', 
                                 'units':'none', 'data': flags_valid}
+    out_dict['psfc'] = {'info': "2D array of surface pressure (lat, lon), or 3D if ensemble (est. number, lat, lon)", "units":"Pa", "data": psfc_in_Pa}
+    out_dict['temp'] = {'info': 'Temperature (altitude, lat, lon) if hires, or (est. num, altitude, lat, lon) if ens', 'units': 'K', 'data': temp_in_K} #TODO: check this
 
     return out_dict
 # --- End of function to compute density based on era5 data

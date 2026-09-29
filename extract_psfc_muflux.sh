@@ -12,5 +12,5 @@ fi
 
 # Load configuration
 . "${CONFIG_FILE}"
-
+#TODO: use correct psfcf (sub)directory, not DENSITY_DIR
 python3 extract_psfc_muflux.py "${LON}" "${LAT}" "${DENSITY_DIR}" "${MUFLUX_DIR}" "${BASE_DIR}"
