@@ -10,6 +10,7 @@
 date_st=202606090000    # First date of interest
 date_ed=202606091200    # Last date of interest
 time_interval=180       # Number of minutes between files to download
+num_interval=4          # Number of intervals to download per run_download_and_process job in parallel
 
 
 # Region of interest (currently: Sydney, Australia)

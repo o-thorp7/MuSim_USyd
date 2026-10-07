@@ -14,16 +14,16 @@ import sys
 
 lon = float(sys.argv[1])
 lat = float(sys.argv[2])
-density_dir = Path(sys.argv[3])
-muflux_dir = Path(sys.argv[4])
-base_dir = Path(sys.argv[5])
+hires_dir = Path(sys.argv[3])
+ens_dir = Path(sys.argv[4])
+muflux_dir = Path(sys.argv[5])
+base_dir = Path(sys.argv[6])
 
 output_dir = base_dir / "summary"
 output_dir.mkdir(parents=True, exist_ok=True)
 
 
 
-psfc_files = sorted(glob.glob(str(density_dir / "*.pkl")))
 comb_muflux_files = sorted(glob.glob(str(muflux_dir / "combined*.npy")))
 
 ts = []
@@ -44,13 +44,15 @@ np.save(output_dir / "combined_mufluxes.npy", np.array(comb_mufluxes))
     # hr = str(t//100+1).zfill(2)
     # psfcfile = '20210320/truthfile_20210320%s_v2.pkl'%(tstr)
 
+psfc_ens_files = sorted(glob.glob(str(ens_dir / "*.pkl")))
+psfc_hires_files = sorted(glob.glob(str(hires_dir / "*.pkl")))
+
 true_psfcs = []
 
-for psfcfile in psfc_files:
-    # assumes formatted like density_era5_ensem_2026-06-09_12UTC.pkl
-    t = datetime.strptime(psfcfile[-20:-7], "%Y-%m-%d_%H")
+for f_ens, f_hires in zip(psfc_ens_files, psfc_hires_files):
 
-    truthdata = pd.read_pickle(psfcfile)
+    truthdata = pd.read_pickle(f_hires)
+    ensdata = pd.read_pickle(f_ens)
     psfc = truthdata['psfc'] #TODO: use ens members to produce stats (e.g. variance)
     londata = truthdata['lon']
     latdata = truthdata['lat']

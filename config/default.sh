@@ -10,6 +10,7 @@
 date_st=202606090000    # First date of interest
 date_ed=202606091200    # Last date of interest # eventually change to 202607230000
 time_interval=180       # Number of minutes between files to download
+num_interval=4          # Number of intervals to download per run_download_and_process job in parallel
 
 
 # Region of interest (currently: Sydney, Australia)
@@ -50,13 +51,13 @@ PREP_NTASKS=4 # -n
 PREP_NNODES=1 # -N
 PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
 PREP_TIME="01:00:00" # --time
-PREP_MEM="5G" # --mem #TODO: check this value is ok
+PREP_MEM="4G" # --mem #TODO: check this value is ok
 
 SPLINE_NTASKS=4 # -n
 SPLINE_NNODES=1 # -N
 SPLINE_NCPUS=1 # --cpus-per-task
 SPLINE_TIME="01:00:00" # --time
-SPLINE_MEM="10G" # --mem
+SPLINE_MEM="6G" # --mem
 
 MUFLUX_NTASKS=4 # -n
 MUFLUX_NNODES=1 # -N

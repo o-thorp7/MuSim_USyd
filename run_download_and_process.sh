@@ -17,6 +17,10 @@ fi
 # Load configuration
 . "${CONFIG_FILE}"
 
+# Override the config date range when submit_prep_density_data.sh passes a chunk
+this_date_st="${JOB_DATE_ST:-${date_st}}"
+this_date_ed="${JOB_DATE_ED:-${date_ed}}"
+
 # Environment setup (needed because sbatch shells don't source ~/.bashrc)
 if [[ "${ENV_TYPE}" == "venv" ]]; then
     source "${VENV_PATH}/bin/activate"
@@ -50,9 +54,9 @@ function request_date_loop {
   python_script=$1
 
   # Starting loop
-  date_nw=$date_st
+  date_nw=$this_date_st
 
-  while [[ $date_nw -le $date_ed ]]; do
+  while [[ $date_nw -le $this_date_ed ]]; do
     python -u $python_script $date_nw $domain_max_latitude $domain_min_latitude $domain_max_longitude $domain_min_longitude
     date_nw=`advance_time $date_nw $time_interval`  
   done
@@ -87,8 +91,7 @@ echo ""
 date
 echo Generating density fields from downloaded data
 
-#TODO: change date range and interval, then run many simultaneously using submit_prep_density_data
-python compute_era5_density.py  $date_st  $date_ed  $time_interval
+python compute_era5_density.py  $this_date_st  $this_date_ed  $time_interval
 
 echo Finished generating density fields
 date

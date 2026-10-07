@@ -12,5 +12,9 @@ fi
 
 # Load configuration
 . "${CONFIG_FILE}"
+HIRES_DIR="${DENSITY_DIR}/era5_hires"
+ENS_DIR="${DENSITY_DIR}/era5_ensem"
+
 #TODO: use correct psfcf (sub)directory, not DENSITY_DIR
-python3 extract_psfc_muflux.py "${LON}" "${LAT}" "${DENSITY_DIR}" "${MUFLUX_DIR}" "${BASE_DIR}"
+# python3 extract_psfc_muflux.py "${LON}" "${LAT}" "${HIRES_DIR}" "${ENS_DIR}" "${MUFLUX_DIR}" "${BASE_DIR}"
+echo extract_psfc_muflux.py "${LON}" "${LAT}" "${HIRES_DIR}" "${ENS_DIR}" "${MUFLUX_DIR}" "${BASE_DIR}"
