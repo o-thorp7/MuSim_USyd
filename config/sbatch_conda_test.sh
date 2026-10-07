@@ -45,19 +45,24 @@ RUN_MODE="sbatch"
 # Slurm account / resources
 # --------------------------
 PROJECT_CODE="PAS2635"
-PREP_NTASKS=4 
-PREP_NNODES=1
-SPLINE_NTASKS=4
-SPLINE_NCPUS=1
-SPLINE_NNODES=1
-MUFLUX_NTASKS=4
-MUFLUX_NCPUS=1
-MUFLUX_NNODES=1
-PREP_TIME="00:05:00"
-SPLINE_TIME="00:15:00"
-SPLINE_MEM="10G"
-MUFLUX_TIME="00:25:00"
-MUFLUX_MEM="3G"
+
+PREP_NTASKS=4 # -n
+PREP_NNODES=1 # -N
+PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
+PREP_TIME="00:05:00" # --time
+PREP_MEM="5G" # --mem #TODO: check this value is ok
+
+SPLINE_NTASKS=4 # -n
+SPLINE_NNODES=1 # -N
+SPLINE_NCPUS=1 # --cpus-per-task
+SPLINE_TIME="00:15:00" # --time
+SPLINE_MEM="10G" # --mem
+
+MUFLUX_NTASKS=4 # -n
+MUFLUX_NNODES=1 # -N
+MUFLUX_NCPUS=1 # --cpus-per-task
+MUFLUX_TIME="00:25:00" # --time
+MUFLUX_MEM="3G" # --mem
 
 # Python environment
 # -------------------

@@ -36,11 +36,14 @@ if [[ "${RUN_MODE}" == "local" ]]; then
 else
     echo "Submitting run_download_and_process.sh to Slurm with config: ${CONFIG_FILE}"
     jid=$(sbatch --parsable \
+        ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} \
         -n "${PREP_NTASKS}" \
         -N "${PREP_NNODES}" \
-        -t "${PREP_TIME}" \
+        --cpus-per-task="${PREP_NCPUS}" \
+        --mem="${PREP_MEM}" \
+        --time="${PREP_TIME}" \
         -o "${LOG_DIR}/log.prep_density_data_%j.out" \
-        ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} \
+        --job-name="submit_prep_density_data" \
         --export=CONFIG_FILE="${CONFIG_FILE}" \
         run_download_and_process.sh)
     echo "${jid}" > "${LOG_DIR}/prep.jobid"

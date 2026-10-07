@@ -19,7 +19,7 @@ mkdir -p "${SUMMARY_DIR}"
 report_since="${2:-$(date +%F)}"
 format_fields=(
     JobID
-    JobName
+    JobName%30
     Start
     TotalCPU
     Elapsed
@@ -27,6 +27,11 @@ format_fields=(
     MaxRSS
     ReqMem
     State
+    # add fields relating to -n -N --cpus-per-task --mem
+    NNodes
+    NTasks
+    ReqCPUS
+    AllocCPUS
 )
 format_fields+=("${@:3}")
 final_format=$(IFS=,; echo "${format_fields[*]}")

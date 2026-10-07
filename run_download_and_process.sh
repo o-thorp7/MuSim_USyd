@@ -40,14 +40,6 @@ function advance_time {
   inc=$2
   date -u -d $inc' minutes '$ccyymmdd' '$hh':'$mm +%Y%m%d%H%M
 }
-#TODO: check if this works (required to run on mac)
-# function advance_time {
-#   python -c "from datetime import datetime, timedelta; 
-#   print(
-#     (datetime.strptime('$1', '%Y%m%d%H%M') + 
-#     timedelta(minutes=$2)).strftime('%Y%m%d%H%M')
-#   )"
-# }
 
 
 # Function to loop over times requested
