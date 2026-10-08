@@ -14,8 +14,9 @@ if [[ ! -f "${CONFIG_FILE}" ]]; then
     exit 1
 fi
 
-# Load configuration
+# Load configuration and throttle function
 . "${CONFIG_FILE}"
+. "$(dirname "${BASH_SOURCE[0]}")/throttle.sh"
 
 # Create log directory
 mkdir -p "${LOG_DIR}"
@@ -48,6 +49,8 @@ while [[ "${chunk_st}" -le "${date_ed}" ]]; do
     if [[ "${chunk_ed}" -gt "${date_ed}" ]]; then
         chunk_ed="${date_ed}"
     fi
+
+    wait_for_slot "prep_density_"
 
     if [[ "${RUN_MODE}" == "local" ]]; then
         echo "Running run_download_and_process.sh locally for ${chunk_st} -> ${chunk_ed} with config: ${CONFIG_FILE}"

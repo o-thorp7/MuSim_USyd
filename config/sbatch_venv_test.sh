@@ -30,7 +30,7 @@ download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  
 # RUNTIME CONFIGURATION — all paths and resource settings below
 # =========================================================================
 
-GIT_HASH=$(git rev-parse --short HEAD~1)
+GIT_HASH=$(git rev-parse --short HEAD)
 # GIT_HASH=$(git rev-parse --short HEAD)
 
 # Config identity — compute BASE_DIR from this script's location

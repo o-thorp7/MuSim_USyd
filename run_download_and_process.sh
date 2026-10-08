@@ -21,6 +21,9 @@ fi
 this_date_st="${JOB_DATE_ST:-${date_st}}"
 this_date_ed="${JOB_DATE_ED:-${date_ed}}"
 
+FAILED_FILE="${LOG_DIR}/failed_downloads_${this_date_st}.txt"
+rm -f "${FAILED_FILE}"
+
 # Environment setup (needed because sbatch shells don't source ~/.bashrc)
 if [[ "${ENV_TYPE}" == "venv" ]]; then
     source "${VENV_PATH}/bin/activate"
@@ -57,7 +60,8 @@ function request_date_loop {
   date_nw=$this_date_st
 
   while [[ $date_nw -le $this_date_ed ]]; do
-    python -u $python_script $date_nw $domain_max_latitude $domain_min_latitude $domain_max_longitude $domain_min_longitude
+    python -u $python_script $date_nw $domain_max_latitude $domain_min_latitude $domain_max_longitude $domain_min_longitude \
+        || echo "$python_script $date_nw" >> "${FAILED_FILE}"
     date_nw=`advance_time $date_nw $time_interval`  
   done
 }
@@ -73,8 +77,8 @@ echo Starting to run downloads with config: ${CONFIG_FILE}
 
 # Loop over scripts to run
 for script in $download_script_list; do
-    logfile="${LOG_DIR}/log.${script::-3}"
-    echo Running $script
+    logfile="${LOG_DIR}/log.${script::-3}_${this_date_st}"
+    echo "Running ${script} starting at ${this_date_st}"
     request_date_loop $script >& $logfile &
 done
 
@@ -88,10 +92,16 @@ echo Finished running downloads
 
 echo ""
 
+if [[ -s "${FAILED_FILE}" ]]; then
+    echo "Some downloads failed (see ${FAILED_FILE}); skipping density step"
+    exit 1
+fi
+
+
 date
 echo Generating density fields from downloaded data
 
-python compute_era5_density.py  $this_date_st  $this_date_ed  $time_interval
+python compute_era5_density.py $this_date_st $this_date_ed $time_interval || { echo "density step failed"; exit 1; }
 
 echo Finished generating density fields
 date

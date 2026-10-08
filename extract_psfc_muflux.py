@@ -29,7 +29,9 @@ def stamp(p):
 mufluxes = {stamp(p): p for p in muflux_dir.glob("combined*.npy")}
 hires = {stamp(p): p for p in hires_dir.glob("*.pkl")}
 ens   = {stamp(p): p for p in ens_dir.glob("*.pkl")}
-stamps = sorted(hires.keys() & ens.keys())   # only timestamps present in both
+if hires.keys() != ens.keys() or hires.keys() != mufluxes.keys():
+    raise ValueError("Error: timestamps in hires, ens, or mufluxes do not match; only using common timestamps")
+stamps = sorted(hires.keys())
 times = np.array([pd.to_datetime(s, format="%Y-%m-%d_%H") for s in stamps])
 
 mufluxes_all = []
@@ -37,7 +39,7 @@ hires_psfcs = []
 ens_psfcs = []
 
 for s in stamps:
-    # mufluxes_all.append(np.load(mufluxes[s]))
+    mufluxes_all.append(np.load(mufluxes[s]))
 
     hires_data = pd.read_pickle(hires[s])
     h_lat, h_lon, h_psfc = hires_data["lat"]["data"], hires_data["lon"]["data"], hires_data["psfc"]["data"]

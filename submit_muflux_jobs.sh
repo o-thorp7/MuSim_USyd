@@ -19,6 +19,7 @@ fi
 
 # Load configuration
 . "${CONFIG_FILE}"
+. "$(dirname "${BASH_SOURCE[0]}")/throttle.sh"
 
 # Set directories for this pipeline stage
 INPUT_DIR="${SPLINE_DIR}"
@@ -63,6 +64,7 @@ for f in "${FILES[@]}"; do
         jobname="muflux_${timestamp}_${th}"
 
         echo -e "Submitting job for ${fname} ->\n${outfile}\n"
+        wait_for_slot "muflux_"
 
         if [[ "${RUN_MODE}" == "local" ]]; then
             echo -e "Running locally: submit_muflux_calc.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
