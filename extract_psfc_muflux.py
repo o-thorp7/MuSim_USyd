@@ -1,19 +1,14 @@
 #!/usr/bin/env python
-
-import numpy as np
-import pandas as pd
-from scipy import interpolate
-
-from datetime import datetime
-from pathlib import Path
-
-import glob
-import os
+from scipy.interpolate import RegularGridInterpolator
+import re
 import sys
+import numpy as np
+import glob
+from pathlib import Path
+import pandas as pd
 
-
-lon = float(sys.argv[1])
-lat = float(sys.argv[2])
+config_lon = float(sys.argv[1])
+config_lat = float(sys.argv[2])
 hires_dir = Path(sys.argv[3])
 ens_dir = Path(sys.argv[4])
 muflux_dir = Path(sys.argv[5])
@@ -23,69 +18,39 @@ output_dir = base_dir / "summary"
 output_dir.mkdir(parents=True, exist_ok=True)
 
 
+def point_value(lat1d, lon1d, psfc, method="cubic"):
+    # psfc is (lat, lon); raises if the point is outside the domain
+    f = RegularGridInterpolator((lat1d, lon1d), np.asarray(psfc), method=method, bounds_error=True)
+    return float(f((config_lat, config_lon)))
 
-comb_muflux_files = sorted(glob.glob(str(muflux_dir / "combined*.npy")))
+def stamp(p):
+    return re.search(r"\d{4}-\d{2}-\d{2}_\d{2}", Path(p).name).group()
 
-ts = []
-comb_mufluxes = []
-for comb_muflux_file in comb_muflux_files:
-    # assumes formatted like combined_muflux_2026-06-09_06UTC.npy
-    t = datetime.strptime(comb_muflux_file[-20:-7], "%Y-%m-%d_%H")
-    comb_mufluxes.append(np.load(comb_muflux_file))
-    ts.append(t)
+mufluxes = {stamp(p): p for p in muflux_dir.glob("combined*.npy")}
+hires = {stamp(p): p for p in hires_dir.glob("*.pkl")}
+ens   = {stamp(p): p for p in ens_dir.glob("*.pkl")}
+stamps = sorted(hires.keys() & ens.keys())   # only timestamps present in both
+times = np.array([pd.to_datetime(s, format="%Y-%m-%d_%H") for s in stamps])
 
-np.save(output_dir / "combined_times.npy", np.array(ts))
-np.save(output_dir / "combined_mufluxes.npy", np.array(comb_mufluxes))
+mufluxes_all = []
+hires_psfcs = []
+ens_psfcs = []
 
+for s in stamps:
+    # mufluxes_all.append(np.load(mufluxes[s]))
 
-# for t in np.arange(100,2400,100):
-    # print(t)
-    # tstr = str(t).zfill(4)
-    # hr = str(t//100+1).zfill(2)
-    # psfcfile = '20210320/truthfile_20210320%s_v2.pkl'%(tstr)
+    hires_data = pd.read_pickle(hires[s])
+    h_lat, h_lon, h_psfc = hires_data["lat"]["data"], hires_data["lon"]["data"], hires_data["psfc"]["data"]
+    hires_psfcs.append(point_value(h_lat, h_lon, h_psfc))
+    
+    ens_data = pd.read_pickle(ens[s])
+    e_lat, e_lon, e_psfc = ens_data["lat"]["data"], ens_data["lon"]["data"], ens_data["psfc"]["data"]
+    s_ens_psfcs = []
+    for i in range(e_psfc.shape[0]):
+        s_ens_psfcs.append(point_value(e_lat, e_lon, e_psfc[i]))
+    ens_psfcs.append(np.array(s_ens_psfcs))
 
-psfc_ens_files = sorted(glob.glob(str(ens_dir / "*.pkl")))
-psfc_hires_files = sorted(glob.glob(str(hires_dir / "*.pkl")))
-
-true_psfcs = []
-
-for f_ens, f_hires in zip(psfc_ens_files, psfc_hires_files):
-
-    truthdata = pd.read_pickle(f_hires)
-    ensdata = pd.read_pickle(f_ens)
-    psfc = truthdata['psfc'] #TODO: use ens members to produce stats (e.g. variance)
-    londata = truthdata['lon']
-    latdata = truthdata['lat']
-    print(np.min(londata), np.max(londata), (np.min(londata)+np.max(londata))/2)
-    print(np.min(latdata), np.max(latdata), (np.min(latdata)+np.max(latdata))/2)
-
-    latdim = np.shape(londata)[0]
-    londim = np.shape(londata)[1]
-
-    plt_lons = []
-    plt_lats = []
-    plt_rhos = []
-
-    for ilon in range(0,londim):
-        for ilat in range(0,latdim):
-            thislat = latdata[ilat][ilon]
-            thislon = londata[ilat][ilon]
-            thisrho = psfc[ilat][ilon]
-
-            plt_lons.append(thislon)
-            plt_lats.append(thislat)
-            plt_rhos.append(thisrho)
-
-    plt_lons = np.array(plt_lons)
-    plt_lats = np.array(plt_lats)
-    plt_rhos = np.array(plt_rhos)
-    my_spline = interpolate.LinearNDInterpolator(list(zip(plt_lats,plt_lons)), plt_rhos, rescale=True)
-    truth_psfc = my_spline(lat, lon)
-
-    true_psfcs.append(truth_psfc)
-    ts.append(t)
-
-# outarr = [ts, true_psfcs]
-# outarr = np.array(outarr)
-# np.save('true_psfcs_20210320.npy', outarr)
-np.save(output_dir / "combined_psfc.npy", np.array(true_psfcs))
+np.save(output_dir / "combined_times.npy", np.array(times))
+np.save(output_dir / "combined_mufluxes.npy", np.array(mufluxes_all))
+np.save(output_dir / "hires_psfc.npy", np.array(hires_psfcs))
+np.save(output_dir / "ens_psfc.npy", np.array(ens_psfcs).T)
