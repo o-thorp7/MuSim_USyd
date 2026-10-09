@@ -17,13 +17,6 @@ fi
 # Load configuration
 . "${CONFIG_FILE}"
 
-# Override the config date range when submit_prep_density_data.sh passes a chunk
-this_date_st="${JOB_DATE_ST:-${date_st}}"
-this_date_ed="${JOB_DATE_ED:-${date_ed}}"
-
-FAILED_FILE="${LOG_DIR}/failed_downloads_${this_date_st}.txt"
-rm -f "${FAILED_FILE}"
-
 # Environment setup (needed because sbatch shells don't source ~/.bashrc)
 if [[ "${ENV_TYPE}" == "venv" ]]; then
     source "${VENV_PATH}/bin/activate"
@@ -57,11 +50,10 @@ function request_date_loop {
   python_script=$1
 
   # Starting loop
-  date_nw=$this_date_st
+  date_nw=$date_st
 
-  while [[ $date_nw -le $this_date_ed ]]; do
-    python -u $python_script $date_nw $domain_max_latitude $domain_min_latitude $domain_max_longitude $domain_min_longitude \
-        || echo "$python_script $date_nw" >> "${FAILED_FILE}"
+  while [[ $date_nw -le $date_ed ]]; do
+    python -u $python_script $date_nw $domain_max_latitude $domain_min_latitude $domain_max_longitude $domain_min_longitude
     date_nw=`advance_time $date_nw $time_interval`  
   done
 }
@@ -77,8 +69,8 @@ echo Starting to run downloads with config: ${CONFIG_FILE}
 
 # Loop over scripts to run
 for script in $download_script_list; do
-    logfile="${LOG_DIR}/log.${script::-3}_${this_date_st}"
-    echo "Running ${script} starting at ${this_date_st}"
+    logfile="${LOG_DIR}/log.${script::-3}"
+    echo Running $script
     request_date_loop $script >& $logfile &
 done
 
@@ -92,16 +84,11 @@ echo Finished running downloads
 
 echo ""
 
-if [[ -s "${FAILED_FILE}" ]]; then
-    echo "Some downloads failed (see ${FAILED_FILE}); skipping density step"
-    exit 1
-fi
-
-
 date
 echo Generating density fields from downloaded data
 
-python compute_era5_density.py $this_date_st $this_date_ed $time_interval || { echo "density step failed"; exit 1; }
+#TODO: change date range and interval, then run many simultaneously using submit_prep_density_data
+python compute_era5_density.py  $date_st  $date_ed  $time_interval
 
 echo Finished generating density fields
 date

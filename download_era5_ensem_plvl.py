@@ -24,10 +24,6 @@ raw_dir.mkdir(parents=True, exist_ok=True)
 # Construct output filename
 outfile = raw_dir / ('era5_ensem_plvl_' + date.strftime('%Y-%m-%d_%H') + 'UTC.nc')
 
-if outfile.exists() and outfile.stat().st_size > 10:
-    print("already have", outfile)
-    sys.exit(0)
-
 c = cdsapi.Client()
 
 c.retrieve(

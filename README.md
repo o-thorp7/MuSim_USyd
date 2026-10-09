@@ -65,7 +65,7 @@ or to save it to an outfile under `summary/` (with `<date>` defaulting to today)
 ```
 
 To see cpu usage for all users, run
-```
+``` 
 OSCusage -s pitzer -H
 ```
 
