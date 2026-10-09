@@ -64,6 +64,10 @@ or to save it to an outfile under `summary/` (with `<date>` defaulting to today)
 ./save_job_stats.sh <path_to_config> <date> <more format words>
 ```
 
+To see cpu usage for all users, run
+```
+OSCusage -s pitzer -H
+```
 
 
 ## About the Output Density Data
