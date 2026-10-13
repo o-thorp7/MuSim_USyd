@@ -23,7 +23,10 @@ raw_dir.mkdir(parents=True, exist_ok=True)
 
 # Construct output filename
 outfile = raw_dir / ('era5_hires_plvl_' + date.strftime('%Y-%m-%d_%H') + 'UTC.nc')
-
+if outfile.exists() and outfile.stat().st_size > 0:
+    print(f"Already exists, skipping: {outfile}")
+    sys.exit(0)
+    
 c = Client()
 
 c.retrieve(

@@ -1,0 +1,46 @@
+Starting all-angle muflux calculation for 2026-06-09_00UTC
+these are my args ['muflux_calc.py', '/users/PAS2635/zyin8122/MuSim_USyd/default_6f2d5e3_results/splines/avg_spline_2026-06-09_00UTC.npy', '/users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test', '2026-06-09_00UTC']
+Defining MCEq run
+Downloading MCEq database file mceq_db_lext_dpm193_v142.h5.
+MCEqRun::set_interaction_model(): SIBYLL23E
+ParticleManager::_init_default_tracking(): Initializing default tracking categories (pi, K, mu)
+MatrixBuilder::_fill_matrices(): No interactions by D_s- ((-431, np.int64(0))).
+MatrixBuilder::_fill_matrices(): No interactions by D_s+ ((431, np.int64(0))).
+MCEqRun::set_density_model(): Setting density profile to CORSIKA ('BK_USStd', None)
+MCEqRun::set_primary_model(): Primary model set to Hillas-Gaisser (H3a)
+Setting density model
+Saved energy grid to /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/egrid.npy
+Solving theta=5
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_5.npy
+Solving theta=10
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_10.npy
+Solving theta=15
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_15.npy
+Solving theta=20
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_20.npy
+Solving theta=25
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_25.npy
+Solving theta=30
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_30.npy
+Solving theta=35
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_35.npy
+Solving theta=40
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_40.npy
+Solving theta=45
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_45.npy
+Solving theta=50
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_50.npy
+Solving theta=55
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_55.npy
+Solving theta=60
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_60.npy
+Solving theta=65
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_65.npy
+Solving theta=70
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_70.npy
+Solving theta=75
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_75.npy
+Solving theta=80
+Saved /users/PAS2635/zyin8122/MuSim_USyd/muflux_all_angles_test/muflux_2026-06-09_00UTC_80.npy
+Total run time: 318.1824223995209
+Finished all-angle muflux calculation for 2026-06-09_00UTC

@@ -44,7 +44,9 @@ GIT_HASH=$(git rev-parse --short HEAD)
 CONFIG_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "${CONFIG_DIR}")"
-BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
+# BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
+RUN_NAME="june_july_2026"
+BASE_DIR="${REPO_ROOT}/${RUN_NAME}_results"
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
@@ -60,7 +62,8 @@ SLEEP_TIME=60
 PREP_NTASKS=1 # -n
 PREP_NNODES=1 # -N
 PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
-PREP_TIME="04:00:00" # --time
+# PREP_TIME="04:00:00" # --time
+PREP_TIME="48:00:00"
 PREP_MEM="1G" # --mem #TODO: check this value is ok
 
 SPLINE_NTASKS=1 # -n
@@ -79,7 +82,8 @@ MUFLUX_MEM="3G" # --mem
 # Python environment
 # -------------------
 ENV_TYPE="venv"             # "venv" or "conda"
-VENV_PATH="${REPO_ROOT}/isp_venv"
+# VENV_PATH="${REPO_ROOT}/isp_venv"
+VENV_PATH="/users/PAS2635/zyin8122/.venv"
 CONDA_ENV_NAME="isp"
 CONDA_BASE_PATH="${HOME}/miniconda3"
 

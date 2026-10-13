@@ -20,6 +20,9 @@ fi
 # Load configuration
 . "${CONFIG_FILE}"
 
+# Load job-throttling function
+source "${REPO_ROOT}/throttle.sh"
+
 # Set directories for this pipeline stage
 INPUT_DIR="${SPLINE_DIR}"
 OUTPUT_DIR="${MUFLUX_DIR}"
@@ -57,33 +60,77 @@ for f in "${FILES[@]}"; do
         continue
     fi
 
-    #TODO: use one batch per time for all elevation angles?
-    for th in $(seq ${THETA_MIN} ${THETA_STEP} ${THETA_MAX}); do
+    # #TODO: use one batch per time for all elevation angles?
+    # for th in $(seq ${THETA_MIN} ${THETA_STEP} ${THETA_MAX}); do
+    #     outfile="${OUTPUT_DIR}/muflux_${timestamp}_${th}.npy"
+    #     jobname="muflux_${timestamp}_${th}"
+
+    #     echo -e "Submitting job for ${fname} ->\n${outfile}\n"
+
+    #     if [[ "${RUN_MODE}" == "local" ]]; then
+    #         echo -e "Running locally: submit_muflux_calc.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
+    #         CONFIG_FILE="${CONFIG_FILE}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
+    #         PIDS+=("$!")
+    #     else
+    #         jid=$(sbatch --parsable \
+    #             ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} \
+    #             -n "${MUFLUX_NTASKS}" \
+    #             -N "${MUFLUX_NNODES}" \
+    #             --cpus-per-task="${MUFLUX_NCPUS}" \
+    #             --mem="${MUFLUX_MEM}" \
+    #             --time="${MUFLUX_TIME}" \
+    #             --job-name="${jobname}" \
+    #             --output="${LOG_DIR}/${jobname}_%j.out" \
+    #             --error="${LOG_DIR}/${jobname}_%j.err" \
+    #             --export=CONFIG_FILE="${CONFIG_FILE}" \
+    #             submit_muflux_calc.sh ${f} ${th} ${outfile})
+    #         JOBIDS+=("${jid}")
+    #     fi
+    # done
+        all_outputs_exist=true
+
+    for ((th=THETA_MIN; th<THETA_MAX; th+=THETA_STEP)); do
         outfile="${OUTPUT_DIR}/muflux_${timestamp}_${th}.npy"
-        jobname="muflux_${timestamp}_${th}"
 
-        echo -e "Submitting job for ${fname} ->\n${outfile}\n"
-
-        if [[ "${RUN_MODE}" == "local" ]]; then
-            echo -e "Running locally: submit_muflux_calc.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
-            CONFIG_FILE="${CONFIG_FILE}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
-            PIDS+=("$!")
-        else
-            jid=$(sbatch --parsable \
-                ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} \
-                -n "${MUFLUX_NTASKS}" \
-                -N "${MUFLUX_NNODES}" \
-                --cpus-per-task="${MUFLUX_NCPUS}" \
-                --mem="${MUFLUX_MEM}" \
-                --time="${MUFLUX_TIME}" \
-                --job-name="${jobname}" \
-                --output="${LOG_DIR}/${jobname}_%j.out" \
-                --error="${LOG_DIR}/${jobname}_%j.err" \
-                --export=CONFIG_FILE="${CONFIG_FILE}" \
-                submit_muflux_calc.sh ${f} ${th} ${outfile})
-            JOBIDS+=("${jid}")
+        if [[ ! -s "${outfile}" ]]; then
+            all_outputs_exist=false
+            break
         fi
     done
+
+    if [[ "${all_outputs_exist}" == true ]]; then
+        echo "All muon outputs already exist, skipping: ${timestamp}"
+        continue
+    fi
+
+    jobname="muflux_${timestamp}"
+
+    echo "Submitting one all-angle job for ${fname}"
+
+    if [[ "${RUN_MODE}" == "local" ]]; then
+        CONFIG_FILE="${CONFIG_FILE}" \
+            bash submit_muflux_calc.sh \
+            "${f}" "${OUTPUT_DIR}" "${timestamp}" \
+            >& "${LOG_DIR}/${jobname}.log" &
+
+        PIDS+=("$!")
+    else
+        jid=$(sbatch --parsable \
+            ${ACCOUNT_FLAG[@]+"${ACCOUNT_FLAG[@]}"} \
+            -n "${MUFLUX_NTASKS}" \
+            -N "${MUFLUX_NNODES}" \
+            --cpus-per-task="${MUFLUX_NCPUS}" \
+            --mem="${MUFLUX_MEM}" \
+            --time="${MUFLUX_TIME}" \
+            --job-name="${jobname}" \
+            --output="${LOG_DIR}/${jobname}_%j.out" \
+            --error="${LOG_DIR}/${jobname}_%j.err" \
+            --export=CONFIG_FILE="${CONFIG_FILE}" \
+            submit_muflux_calc.sh \
+            "${f}" "${OUTPUT_DIR}" "${timestamp}")
+
+        JOBIDS+=("${jid}")
+    fi
 done
 
 if [[ "${RUN_MODE}" == "local" ]]; then

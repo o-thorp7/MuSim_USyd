@@ -181,22 +181,38 @@ def compute_density_from_era5_file( file_prefix, ztype_dict, date_targ ):
 '''
     Main program
 '''
+# for pfx in era5_prefix_list:
+#     for date_nw in date_list:
+
+#         print( 'Processing prefix ', pfx, ' on ', date_nw )
 for pfx in era5_prefix_list:
     for date_nw in date_list:
 
-        print( 'Processing prefix ', pfx, ' on ', date_nw )
+        out_subdir = DENSITY_DIR / pfx
+        out_subdir.mkdir(parents=True, exist_ok=True)
 
+        outfname = out_subdir / date_nw.strftime(
+            "density_" + pfx + "_%Y-%m-%d_%HUTC.pkl"
+        )
+
+        if outfname.exists() and outfname.stat().st_size > 0:
+            print("Already exists, skipping: ", outfname)
+            continue
+
+        print("Processing prefix ", pfx, " on ", date_nw)
+
+        
         # Compute density information
         density_data_dict = compute_density_from_era5_file( pfx, era5_ztype_dict, date_nw )
 
-        # Output data as pickle file
-        # Create subdirectory if needed
-        out_subdir = DENSITY_DIR / pfx
-        out_subdir.mkdir(parents=True, exist_ok=True)
+        # # Output data as pickle file
+        # # Create subdirectory if needed
+        # out_subdir = DENSITY_DIR / pfx
+        # out_subdir.mkdir(parents=True, exist_ok=True)
         
-        outfname = out_subdir / date_nw.strftime(
-            'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
-        )
+        # outfname = out_subdir / date_nw.strftime(
+        #     'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
+        # )
         with open( outfname, 'wb') as f:
             pickle.dump( density_data_dict, f )
         # --- end of pickle dump process

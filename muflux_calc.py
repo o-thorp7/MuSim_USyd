@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 
 from scipy import stats
-import geopy.distance
+# import geopy.distance
 import time
 
 class TestAtmosphere(CorsikaAtmosphere):
@@ -81,7 +81,78 @@ class TestAtmosphere(CorsikaAtmosphere):
         avg_spline = interpolate.LinearNDInterpolator(list(zip(plt_x, plt_z)), slice_avg, rescale=True)
         return avg_spline
 
+# print("these are my args", sys.argv)
 print("these are my args", sys.argv)
+
+if len(sys.argv) != 4:
+    raise SystemExit(
+        "Usage: muflux_calc.py <spline_file> <output_directory> <timestamp>"
+    )
+
+spline_file = str(sys.argv[1])
+output_dir = Path(sys.argv[2])
+timestamp = str(sys.argv[3])
+
+output_dir.mkdir(parents=True, exist_ok=True)
+
+theta_min = float(os.environ.get("THETA_MIN", 5))
+theta_max = float(os.environ.get("THETA_MAX", 81))
+theta_step = float(os.environ.get("THETA_STEP", 5))
+
+# Preserve all 16 simulations: 5, 10, ..., 80 degrees.
+thetas = np.arange(theta_min, theta_max, theta_step)
+
+t1 = time.time()
+
+t_atmosphere = TestAtmosphere(
+    "USStd",
+    None,
+    fpath=spline_file,
+)
+
+print("Defining MCEq run")
+
+mceq_run = MCEqRun(
+    interaction_model="SIBYLL23E",
+    primary_model=(pm.HillasGaisser2012, "H3a"),
+    theta_deg=float(thetas[0]),
+)
+
+print("Setting density model")
+mceq_run.set_density_model(t_atmosphere)
+
+e_grid = mceq_run.e_grid
+egrid_outfile = output_dir / "egrid.npy"
+
+# Multiple jobs may reach this section simultaneously.
+# Write through a job-specific temporary file.
+if not egrid_outfile.exists():
+    temporary_egrid = output_dir / f".egrid_{os.getpid()}.npy"
+    np.save(temporary_egrid, e_grid)
+    os.replace(temporary_egrid, egrid_outfile)
+    print(f"Saved energy grid to {egrid_outfile}")
+
+for theta in thetas:
+    outfile = output_dir / f"muflux_{timestamp}_{theta:g}.npy"
+
+    if outfile.exists() and outfile.stat().st_size > 0:
+        print(f"Already exists, skipping: {outfile}")
+        continue
+
+    print(f"Solving theta={theta:g}")
+
+    mceq_run.set_theta_deg(float(theta))
+    mceq_run.solve()
+
+    muflux = (
+        mceq_run.get_solution("total_mu+", 0)
+        + mceq_run.get_solution("total_mu-", 0)
+    )
+
+    np.save(outfile, muflux)
+    print(f"Saved {outfile}")
+
+print("Total run time:", time.time() - t1)
 #this_h = float(sys.argv[1])
 #this_theta = 90-np.degrees(np.arctan2(this_h, 10.5))
 this_fpath = str(sys.argv[1])

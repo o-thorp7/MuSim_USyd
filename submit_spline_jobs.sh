@@ -20,6 +20,9 @@ fi
 # Load configuration
 . "${CONFIG_FILE}"
 
+# Load job-throttling function
+source "${REPO_ROOT}/throttle.sh"
+
 # Set directories for this pipeline stage
 INPUT_DIR="${DENSITY_DIR}/era5_hires"
 OUTPUT_DIR="${SPLINE_DIR}"
@@ -60,6 +63,12 @@ for f in "${FILES[@]}"; do
     outfile="${OUTPUT_DIR}/avg_spline_${timestamp}.npy"
     jobname="spline_${timestamp}"
 
+    if [[ -s "${outfile}" ]]; then
+    echo "Already exists, skipping: ${outfile}"
+    continue
+    fi
+    
+
     echo -e "Submitting job for ${fname} ->\n${outfile}\n"
 
     if [[ "${RUN_MODE}" == "local" ]]; then
@@ -78,7 +87,8 @@ for f in "${FILES[@]}"; do
             --output="${LOG_DIR}/${jobname}_%j.out" \
             --error="${LOG_DIR}/${jobname}_%j.err" \
             --export=CONFIG_FILE="${CONFIG_FILE}" \
-            submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile}) \
+            # submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile})
+            submit_slice_spline.sh "${f}" "${LON}" "${LAT}" "${outfile}")
         JOBIDS+=("${jid}")
     fi
 done
