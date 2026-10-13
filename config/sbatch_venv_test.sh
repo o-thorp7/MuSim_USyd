@@ -30,6 +30,7 @@ download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  
 # =========================================================================
 
 GIT_HASH=$(git rev-parse --short HEAD)
+# GIT_HASH=$(git rev-parse --short HEAD)
 
 # Config identity — compute BASE_DIR from this script's location
 # ---------------------------------------------------------------
@@ -45,15 +46,24 @@ RUN_MODE="sbatch"
 # Slurm account / resources
 # --------------------------
 PROJECT_CODE="PAS2635"
-PREP_NTASKS=4
-PREP_NNODES=1
-SPLINE_NCPUS=4
-MUFLUX_NCPUS=4
-PREP_TIME="00:10:00"
-SPLINE_TIME="00:25:00"
-SPLINE_MEM="10G"
-MUFLUX_TIME="00:35:00"
-MUFLUX_MEM="5G"
+
+PREP_NTASKS=4 # -n
+PREP_NNODES=1 # -N
+PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
+PREP_TIME="00:15:00" # --time
+PREP_MEM="4G" # --mem #TODO: check this value is ok
+
+SPLINE_NTASKS=1 # -n
+SPLINE_NNODES=1 # -N
+SPLINE_NCPUS=1 # --cpus-per-task
+SPLINE_TIME="00:25:00" # --time
+SPLINE_MEM="6G" # --mem
+
+MUFLUX_NTASKS=4 # -n
+MUFLUX_NNODES=1 # -N
+MUFLUX_NCPUS=1 # --cpus-per-task
+MUFLUX_TIME="00:35:00" # --time
+MUFLUX_MEM="3G" # --mem
 
 # Python environment
 # -------------------

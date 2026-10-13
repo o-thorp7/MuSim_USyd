@@ -8,7 +8,7 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202606091200    # Last date of interest # eventually change to 202607230000
+date_ed=202607230000    # Last date of interest # eventually change to 202607230000
 time_interval=180       # Number of minutes between files to download
 
 
@@ -18,6 +18,14 @@ domain_min_latitude=-35.0  # In degrees North
 domain_max_latitude=-32.0  # In degrees North
 domain_min_longitude=150.0 # In degrees East
 domain_max_longitude=152.0 # In degrees East
+
+# Detector location + zenith angle scan
+# ---------------------------------------
+LON=151.1873
+LAT=-33.8886
+THETA_MIN=5
+THETA_MAX=81
+THETA_STEP=5
 
 
 # Download scripts to run
@@ -45,15 +53,28 @@ RUN_MODE="sbatch"
 # Slurm account / resources
 # --------------------------
 PROJECT_CODE="PAS2635"
-PREP_NTASKS=4
-PREP_NNODES=1
-SPLINE_NCPUS=1
-MUFLUX_NCPUS=4
-PREP_TIME="01:00:00"
-SPLINE_TIME="01:00:00"
-SPLINE_MEM="10G"
-MUFLUX_TIME="01:00:00"
-MUFLUX_MEM="3G"
+
+MAX_JOBS=12
+SLEEP_TIME=60
+
+PREP_NTASKS=1 # -n
+PREP_NNODES=1 # -N
+PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
+PREP_TIME="04:00:00" # --time
+PREP_MEM="1G" # --mem #TODO: check this value is ok
+
+SPLINE_NTASKS=1 # -n
+SPLINE_NNODES=1 # -N
+SPLINE_NCPUS=1 # --cpus-per-task
+SPLINE_TIME="01:00:00" # --time
+SPLINE_MEM="6G" # --mem
+
+MUFLUX_NTASKS=4 # -n
+MUFLUX_NNODES=1 # -N
+MUFLUX_NCPUS=1 # --cpus-per-task
+MUFLUX_TIME="00:20:00" # --time
+MUFLUX_MEM="3G" # --mem
+
 
 # Python environment
 # -------------------
@@ -61,14 +82,6 @@ ENV_TYPE="venv"             # "venv" or "conda"
 VENV_PATH="${REPO_ROOT}/isp_venv"
 CONDA_ENV_NAME="isp"
 CONDA_BASE_PATH="${HOME}/miniconda3"
-
-# Detector location + zenith angle scan
-# ---------------------------------------
-LON=151.1873
-LAT=-33.8886
-THETA_MIN=5
-THETA_MAX=81
-THETA_STEP=5
 
 # Output directories (all derived from BASE_DIR)
 # -----------------------------------------------

@@ -64,6 +64,10 @@ or to save it to an outfile under `summary/` (with `<date>` defaulting to today)
 ./save_job_stats.sh <path_to_config> <date> <more format words>
 ```
 
+To see cpu usage for all users, run
+``` 
+OSCusage -s pitzer -H
+```
 
 
 ## About the Output Density Data
@@ -107,6 +111,16 @@ code snippet defining those dictionaries
         'units':'none', 
         'data': flags_valid
     }
+    out_dict['psfc'] = {
+        'info': 'Array of surface pressure (lat, lon)',
+        'units':'Pa',
+        'data': psfc_in_Pa
+    }
+    out_dict['temp'] = {
+        'info': 'Temperature (altitude, lat, lon) for HiRes',
+        'units': 'K',
+        'data': temp_in_K
+    }
 ```
 
 
@@ -118,7 +132,7 @@ Dimensions of `air_density`, `altitude`, and `valid_points` in `hires` files:
     level, latitude, longitude
 
 Dimensions of `air_density`, `altitude`, and `valid_points` in `ensem` files:
-    ensemble, level, latitude, longitude# MuSim_USyd
+    ensemble, level, latitude, longitude
     
     
 ## Plotting Data
