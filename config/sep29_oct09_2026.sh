@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# =========================================================================
+# Configuration controlling ERA5 downloads and density calculations
+# -------------------------------------------------------------------------
+# Written by Man-Yau (Joseph) Chan
+# =========================================================================
+
+# Dates of interest
+# ------------------
+date_st=202609290000
+date_ed=202610092100
+time_interval=180
+
+
+# Region of interest (currently: Sydney, Australia)
+# -------------------------------------------------
+domain_min_latitude=-35.0  # In degrees North
+domain_max_latitude=-32.0  # In degrees North
+domain_min_longitude=150.0 # In degrees East
+domain_max_longitude=152.0 # In degrees East
+
+# Detector location + zenith angle scan
+# ---------------------------------------
+LON=151.1873
+LAT=-33.8886
+THETA_MIN=5
+THETA_MAX=81
+THETA_STEP=5
+
+
+# Download scripts to run
+# -----------------------
+download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  download_era5_ensem_land.py  download_era5_ensem_plvl.py"
+
+
+# =========================================================================
+# RUNTIME CONFIGURATION — all paths and resource settings below
+# =========================================================================
+
+GIT_HASH=$(git rev-parse --short HEAD)
+
+# Config identity — compute BASE_DIR from this script's location
+# ---------------------------------------------------------------
+CONFIG_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
+CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "${CONFIG_DIR}")"
+# BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
+RUN_NAME="sep29_oct09_2026"
+BASE_DIR="${REPO_ROOT}/${RUN_NAME}_results"
+
+# Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
+# ---------------------------------------------------------------------------
+RUN_MODE="sbatch"
+
+# Slurm account / resources
+# --------------------------
+PROJECT_CODE="PAS2635"
+
+MAX_JOBS=12
+SLEEP_TIME=60
+
+PREP_NTASKS=1 # -n
+PREP_NNODES=1 # -N
+PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
+# PREP_TIME="04:00:00" # --time
+PREP_TIME="48:00:00"
+PREP_MEM="1G" # --mem #TODO: check this value is ok
+
+SPLINE_NTASKS=1 # -n
+SPLINE_NNODES=1 # -N
+SPLINE_NCPUS=1 # --cpus-per-task
+SPLINE_TIME="01:00:00" # --time
+SPLINE_MEM="6G" # --mem
+
+MUFLUX_NTASKS=4 # -n
+MUFLUX_NNODES=1 # -N
+MUFLUX_NCPUS=1 # --cpus-per-task
+MUFLUX_TIME="00:20:00" # --time
+MUFLUX_MEM="3G" # --mem
+
+
+# Python environment
+# -------------------
+ENV_TYPE="venv"             # "venv" or "conda"
+# VENV_PATH="${REPO_ROOT}/isp_venv"
+VENV_PATH="/users/PAS2635/zyin8122/.venv"
+CONDA_ENV_NAME="isp"
+CONDA_BASE_PATH="${HOME}/miniconda3"
+
+# Output directories (all derived from BASE_DIR)
+# -----------------------------------------------
+LOG_DIR="${BASE_DIR}/logs"
+RAW_DIR="${BASE_DIR}/raw"
+DENSITY_DIR="${BASE_DIR}/density"
+SPLINE_DIR="${BASE_DIR}/splines"
+MUFLUX_DIR="${BASE_DIR}/mufluxes"
+
+# Export for use by Python scripts
+export RAW_DIR DENSITY_DIR THETA_MIN THETA_MAX THETA_STEP

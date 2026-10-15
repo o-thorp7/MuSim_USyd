@@ -15,7 +15,7 @@ import re
 import time
 
 PRODUCTS = ('era5_hires_land', 'era5_hires_plvl', 'era5_ensem_land', 'era5_ensem_plvl')
-DEFAULT_RUN = '/users/PAS2635/zyin8122/MuSim_USyd/june_july_2026_results'
+DEFAULT_RUN = '/users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results'
 
 
 def scan_files(raw):
