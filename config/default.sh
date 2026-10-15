@@ -46,8 +46,9 @@ download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  
 CONFIG_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "${CONFIG_DIR}")"
-RESULTS_ROOT="${REPO_ROOT}/results/${CONFIG_NAME}"
-. "${REPO_ROOT}/run_dir.sh" || return 1
+# BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
+RUN_NAME="june_july_2026"
+BASE_DIR="${REPO_ROOT}/${RUN_NAME}_results"
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
@@ -69,9 +70,10 @@ CDS_RETRY_WAIT=300    # seconds before retrying a failed request (x attempt numb
 # Downloads are resumable: if this times out, rerun with --resume.
 PREP_NTASKS=1 # -n
 PREP_NNODES=1 # -N
-PREP_NCPUS=1 # --cpus-per-task
-PREP_TIME="24:00:00" # --time
-PREP_MEM="2G" # --mem
+PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
+# PREP_TIME="04:00:00" # --time
+PREP_TIME="48:00:00"
+PREP_MEM="1G" # --mem #TODO: check this value is ok
 
 SPLINE_NTASKS=1 # -n
 SPLINE_NNODES=1 # -N
@@ -89,7 +91,8 @@ MUFLUX_MEM="3G" # --mem
 # Python environment
 # -------------------
 ENV_TYPE="venv"             # "venv" or "conda"
-VENV_PATH="${REPO_ROOT}/isp_venv"
+# VENV_PATH="${REPO_ROOT}/isp_venv"
+VENV_PATH="/users/PAS2635/zyin8122/.venv"
 CONDA_ENV_NAME="isp"
 CONDA_BASE_PATH="${HOME}/miniconda3"
 

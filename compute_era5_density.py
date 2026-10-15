@@ -195,40 +195,39 @@ def missing_raw_files( file_prefix, ztype_dict, date_targ ):
 '''
     Main program
 '''
-outfname = None
-n_skipped_missing = 0
+# for pfx in era5_prefix_list:
+#     for date_nw in date_list:
+
+#         print( 'Processing prefix ', pfx, ' on ', date_nw )
 for pfx in era5_prefix_list:
     for date_nw in date_list:
 
-        # Create subdirectory if needed
         out_subdir = DENSITY_DIR / pfx
         out_subdir.mkdir(parents=True, exist_ok=True)
 
-        this_outfname = out_subdir / date_nw.strftime(
-            'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
+        outfname = out_subdir / date_nw.strftime(
+            "density_" + pfx + "_%Y-%m-%d_%HUTC.pkl"
         )
 
-        # Already done on a previous (resumed) run
-        if this_outfname.exists():
-            print( 'Already have ', this_outfname, ', skipping' )
+        if outfname.exists() and outfname.stat().st_size > 0:
+            print("Already exists, skipping: ", outfname)
             continue
 
-        # Download failed or hasn't happened yet: skip this time step
-        missing = missing_raw_files( pfx, era5_ztype_dict, date_nw )
-        if missing:
-            print( 'WARNING: skipping ', pfx, ' on ', date_nw, ', missing raw files: ', missing )
-            n_skipped_missing += 1
-            continue
+        print("Processing prefix ", pfx, " on ", date_nw)
 
-        print( 'Processing prefix ', pfx, ' on ', date_nw )
-
+        
         # Compute density information
         density_data_dict = compute_density_from_era5_file( pfx, era5_ztype_dict, date_nw )
 
-        # Output data as pickle file. Write to a temporary name then rename,
-        # so an interrupted job never leaves a truncated pickle behind.
-        tmpfname = this_outfname.with_name( this_outfname.name + '.part' )
-        with open( tmpfname, 'wb') as f:
+        # # Output data as pickle file
+        # # Create subdirectory if needed
+        # out_subdir = DENSITY_DIR / pfx
+        # out_subdir.mkdir(parents=True, exist_ok=True)
+        
+        # outfname = out_subdir / date_nw.strftime(
+        #     'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
+        # )
+        with open( outfname, 'wb') as f:
             pickle.dump( density_data_dict, f )
         os.replace( tmpfname, this_outfname )
         outfname = this_outfname

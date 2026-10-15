@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 
 from scipy import stats
-import geopy.distance
+# import geopy.distance
 import time
 
 class TestAtmosphere(CorsikaAtmosphere):
@@ -81,69 +81,75 @@ class TestAtmosphere(CorsikaAtmosphere):
         avg_spline = interpolate.LinearNDInterpolator(list(zip(plt_x, plt_z)), slice_avg, rescale=True)
         return avg_spline
 
+# print("these are my args", sys.argv)
 print("these are my args", sys.argv)
-#this_h = float(sys.argv[1])
-#this_theta = 90-np.degrees(np.arctan2(this_h, 10.5))
-this_fpath = str(sys.argv[1])
-this_theta = float(sys.argv[2])
-#simnum = int(sys.argv[1])
-outpath = Path(str(sys.argv[3]))
-#this_fpath = outpath+'/splines/avg_spline_%s.npy'%(str(simnum).zfill(5))
-#this_fpath = '/users/PAS0654/wluszczak/ensda/splines/avg_spline_%s.npy'%(str(simnum).zfill(5))
-print("this_fpath", this_fpath)
+
+if len(sys.argv) != 4:
+    raise SystemExit(
+        "Usage: muflux_calc.py <spline_file> <output_directory> <timestamp>"
+    )
+
+spline_file = str(sys.argv[1])
+output_dir = Path(sys.argv[2])
+timestamp = str(sys.argv[3])
+
+output_dir.mkdir(parents=True, exist_ok=True)
+
+theta_min = float(os.environ.get("THETA_MIN", 5))
+theta_max = float(os.environ.get("THETA_MAX", 81))
+theta_step = float(os.environ.get("THETA_STEP", 5))
+
+# Preserve all 16 simulations: 5, 10, ..., 80 degrees.
+thetas = np.arange(theta_min, theta_max, theta_step)
+
 t1 = time.time()
 
-regc_atmosphere = CorsikaAtmosphere("USStd", None)
-t_atmosphere = TestAtmosphere("USStd", None, fpath=this_fpath)
+t_atmosphere = TestAtmosphere(
+    "USStd",
+    None,
+    fpath=spline_file,
+)
 
-print("Defining run")
+print("Defining MCEq run")
+
 mceq_run = MCEqRun(
-        interaction_model='SIBYLL23E',
-        primary_model=(pm.HillasGaisser2012, "H3a"),
-        theta_deg=0.
-        )
+    interaction_model="SIBYLL23E",
+    primary_model=(pm.HillasGaisser2012, "H3a"),
+    theta_deg=float(thetas[0]),
+)
+
 print("Setting density model")
 mceq_run.set_density_model(t_atmosphere)
-#mceq_run.set_density_model(regc_atmosphere)
+
 e_grid = mceq_run.e_grid
+egrid_outfile = output_dir / "egrid.npy"
 
-# Many jobs may try to save egrid at once: each writes its own temporary file
-# and renames it into place (atomic), so readers never see a half-written file
-egrid_outfile = outpath.parent / 'egrid.npy'
+# Multiple jobs may reach this section simultaneously.
+# Write through a job-specific temporary file.
 if not egrid_outfile.exists():
-    egrid_tmpfile = outpath.parent / f"egrid.{os.environ.get('SLURM_JOB_ID', 'local')}.{os.getpid()}.part.npy"
-    np.save(egrid_tmpfile, e_grid)
-    os.replace(egrid_tmpfile, egrid_outfile)
-    print(f"Saved egrid to {egrid_outfile}")
-else:
-    print(f"egrid already exists at {egrid_outfile}, skipping save")
-
-eints = []
-thetas = [this_theta]
-#thetas = np.linspace(85,88,9)
-#thetas = np.linspace(40,50,18)
-#thetas = np.arccos(np.linspace(1,0,11))*180./np.pi
+    temporary_egrid = output_dir / f".egrid_{os.getpid()}.npy"
+    np.save(temporary_egrid, e_grid)
+    os.replace(temporary_egrid, egrid_outfile)
+    print(f"Saved energy grid to {egrid_outfile}")
 
 for theta in thetas:
-    print(theta)
-    mceq_run.set_theta_deg(theta)
+    outfile = output_dir / f"muflux_{timestamp}_{theta:g}.npy"
+
+    if outfile.exists() and outfile.stat().st_size > 0:
+        print(f"Already exists, skipping: {outfile}")
+        continue
+
+    print(f"Solving theta={theta:g}")
+
+    mceq_run.set_theta_deg(float(theta))
     mceq_run.solve()
 
-    mag = 0
+    muflux = (
+        mceq_run.get_solution("total_mu+", 0)
+        + mceq_run.get_solution("total_mu-", 0)
+    )
 
-    muflux = mceq_run.get_solution('total_mu+', mag) + \
-                           mceq_run.get_solution('total_mu-', mag)
-    #emask = np.where((e_grid>0.1) & (e_grid<1e1))
-    #eint = np.sum(muflux[emask])
-    eints.append(muflux)
+    np.save(outfile, muflux)
+    print(f"Saved {outfile}")
 
-muflux = eints[0]
-
-#np.save(outpath+'/output/%s/muflux_%s_%s.npy'%(str(simnum).zfill(5), str(simnum).zfill(5), str(this_theta).zfill(4)), muflux)
-# Write to a temporary file then rename, so a killed job never leaves a
-# truncated output that later stages would treat as finished
-muflux_tmpfile = outpath.with_name(outpath.stem + '.part.npy')
-np.save(muflux_tmpfile, muflux)
-os.replace(muflux_tmpfile, outpath)
-t2 = time.time()
-print("run time:", t2-t1)
+print("Total run time:", time.time() - t1)

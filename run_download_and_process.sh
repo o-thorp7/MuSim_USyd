@@ -112,22 +112,38 @@ echo "Starting to run downloads with config: ${CONFIG_FILE}"
 echo "Run directory: ${BASE_DIR}"
 echo "At most ${MAX_CDS_REQUESTS} CDS requests in flight. Per-request logs in ${DOWNLOAD_LOG_DIR}"
 
-# Loop over times (outer) then scripts (inner), so all files for a given time
-# arrive close together and a partial run still yields complete time steps.
-n_submitted=0
-date_nw=$date_st
-while [[ $date_nw -le $date_ed ]]; do
-  for script in $download_script_list; do
-    wait_for_request_slot
-    download_with_retry "${script}" "${date_nw}" &
-    n_submitted=$(( n_submitted + 1 ))
-  done
-  date_nw=`advance_time $date_nw $time_interval`
+pids=()
+
+for script in $download_script_list; do
+    logfile="${LOG_DIR}/log.${script::-3}"
+    echo "Running ${script}"
+    request_date_loop "${script}" >& "${logfile}" &
+    pids+=("$!")
 done
 
-# Wait for requests to terminate before quitting.
-echo "Queued all ${n_submitted} downloads. Waiting for the remaining requests to clear."
-wait
+echo "Waiting for all download processes to finish."
+
+download_failed=0
+
+for pid in "${pids[@]}"; do
+    wait "${pid}" || download_failed=1
+done
+
+if [[ "${download_failed}" -ne 0 ]]; then
+    echo "At least one ERA5 download process failed." >&2
+    echo "Density generation was not started." >&2
+    exit 1
+fi
+# # Loop over scripts to run
+# for script in $download_script_list; do
+#     logfile="${LOG_DIR}/log.${script::-3}"
+#     echo Running $script
+#     request_date_loop $script >& $logfile &
+# done
+
+# # Wait for requests to terminate before quitting.
+# echo Waiting for all scripts to clear. Check log files for progress.
+# wait
 
 date
 echo Finished running downloads

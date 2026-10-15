@@ -25,6 +25,9 @@ elif [[ "${ENV_TYPE}" == "conda" ]]; then
     conda activate "${CONDA_ENV_NAME}"
 fi
 
-echo "starting muflux calc" $1 $2
-python3 muflux_calc.py $1 $2 $3
-echo "finished muflux calc for" $1 $2
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+export MKL_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+
+echo "Starting all-angle muflux calculation for $3"
+python3 muflux_calc.py "$1" "$2" "$3"
+echo "Finished all-angle muflux calculation for $3"

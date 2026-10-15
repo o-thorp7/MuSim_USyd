@@ -22,16 +22,10 @@ raw_dir.mkdir(parents=True, exist_ok=True)
 
 # Construct output filename
 outfile = raw_dir / ('era5_ensem_plvl_' + date.strftime('%Y-%m-%d_%H') + 'UTC.nc')
-
-# Skip files that are already complete (lets an interrupted run be resumed)
 if outfile.exists() and outfile.stat().st_size > 0:
-    print("already have", outfile)
+    print(f"Already exists, skipping: {outfile}")
     sys.exit(0)
-
-# Download to a temporary name and rename only once complete, so a killed
-# job never leaves a truncated file that looks finished
-partfile = outfile.with_name(outfile.name + '.part')
-
+    
 c = cdsapi.Client()
 
 c.retrieve(
