@@ -87,7 +87,6 @@ for f in "${FILES[@]}"; do
             --output="${LOG_DIR}/${jobname}_%j.out" \
             --error="${LOG_DIR}/${jobname}_%j.err" \
             --export=CONFIG_FILE="${CONFIG_FILE}" \
-            # submit_slice_spline.sh ${f} ${LON} ${LAT} ${outfile})
             submit_slice_spline.sh "${f}" "${LON}" "${LAT}" "${outfile}")
         JOBIDS+=("${jid}")
     fi
