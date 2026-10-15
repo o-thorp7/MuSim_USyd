@@ -17,8 +17,9 @@ if [[ ! -f "${CONFIG_FILE}" ]]; then
     exit 1
 fi
 
-# Load configuration
+# Load configuration (picks the most recent run directory, or RUN_DIR if set)
 . "${CONFIG_FILE}"
+echo "Using run directory: ${BASE_DIR}"
 
 # Set directories for this pipeline stage
 INPUT_DIR="${SPLINE_DIR}"
@@ -62,11 +63,17 @@ for f in "${FILES[@]}"; do
         outfile="${OUTPUT_DIR}/muflux_${timestamp}_${th}.npy"
         jobname="muflux_${timestamp}_${th}"
 
+        # Already done (e.g. rerunning after some jobs failed)
+        if [[ -s "${outfile}" ]]; then
+            echo "Already have ${outfile}, skipping"
+            continue
+        fi
+
         echo -e "Submitting job for ${fname} ->\n${outfile}\n"
 
         if [[ "${RUN_MODE}" == "local" ]]; then
             echo -e "Running locally: submit_muflux_calc.sh \ninfile: ${f}\nlon, lat: ${LON} ${LAT}\noutfile: ${outfile}\n\n"
-            CONFIG_FILE="${CONFIG_FILE}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
+            CONFIG_FILE="${CONFIG_FILE}" RUN_DIR="${BASE_DIR}" bash submit_muflux_calc.sh ${f} ${th} ${outfile} >& "${LOG_DIR}/${jobname}.log" &
             PIDS+=("$!")
         else
             jid=$(sbatch --parsable \
@@ -79,7 +86,7 @@ for f in "${FILES[@]}"; do
                 --job-name="${jobname}" \
                 --output="${LOG_DIR}/${jobname}_%j.out" \
                 --error="${LOG_DIR}/${jobname}_%j.err" \
-                --export=CONFIG_FILE="${CONFIG_FILE}" \
+                --export=CONFIG_FILE="${CONFIG_FILE}",RUN_DIR="${BASE_DIR}" \
                 submit_muflux_calc.sh ${f} ${th} ${outfile})
             JOBIDS+=("${jid}")
         fi

@@ -18,6 +18,7 @@ fi
 
 # Load configuration
 . "${CONFIG_FILE}"
+echo "Using run directory: ${BASE_DIR}"
 
 # Set directories
 INPUT_DIR="${SPLINE_DIR}"

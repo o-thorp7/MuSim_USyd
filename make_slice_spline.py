@@ -2,6 +2,7 @@
 
 import numpy as np
 import sys
+import os
 import pandas as pd
 import geopy.distance
 from scipy import interpolate
@@ -159,4 +160,8 @@ phis = np.arange(0,360,1)
 avg_spline = make_avg_spline(phis, spline_dict, detlon, detlat)
 #fpath = outdir+'/splines/'
 #np.save(fpath+'/avg_spline_%s.npy'%(str(modelnum).zfill(5)), avg_spline)
-np.save(outfile, avg_spline)
+# Write to a temporary file then rename, so a killed job never leaves a
+# truncated spline that later stages would treat as finished
+tmpfile = outfile + '.part.npy'
+np.save(tmpfile, avg_spline)
+os.replace(tmpfile, outfile)

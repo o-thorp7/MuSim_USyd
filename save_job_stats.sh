@@ -2,21 +2,11 @@
 
 set -euo pipefail
 
-# Get config file from first argument, default to config/default.sh
-CONFIG_FILE="${1:-config/default.sh}"
+today=$(date +%F)
+report_since="${2:-${today}}"
 
-if [[ ! -f "${CONFIG_FILE}" ]]; then
-    echo "Error: Config file not found: ${CONFIG_FILE}" >&2
-    exit 1
-fi
+echo "job_stats/${report_since}_to_${today}.txt"
 
-# Load configuration
-. "${CONFIG_FILE}"
-
-SUMMARY_DIR="${BASE_DIR}/summary"
-mkdir -p "${SUMMARY_DIR}"
-
-report_since="${2:-$(date +%F)}"
 format_fields=(
     JobID
     JobName%30
@@ -27,7 +17,6 @@ format_fields=(
     MaxRSS
     ReqMem
     State
-    # add fields relating to -n -N --cpus-per-task --mem
     NNodes
     NTasks
     ReqCPUS
@@ -38,4 +27,4 @@ final_format=$(IFS=,; echo "${format_fields[*]}")
 
 sacct -S "${report_since}" -u "${USER:-$(whoami)}" \
     --format="${final_format}" > \
-    "${SUMMARY_DIR}/job_stats.txt"
+    "job_stats/${report_since}_to_${today}.txt"

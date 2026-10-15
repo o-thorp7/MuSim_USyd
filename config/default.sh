@@ -8,7 +8,9 @@
 # Dates of interest
 # ------------------
 date_st=202606090000    # First date of interest
-date_ed=202607230000    # Last date of interest # eventually change to 202607230000
+date_ed=202607230000    # Last date of interest
+# date_st=202609290000    # First date of interest
+# date_ed=202610100000    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 
@@ -37,14 +39,15 @@ download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  
 # RUNTIME CONFIGURATION — all paths and resource settings below
 # =========================================================================
 
-GIT_HASH=$(git rev-parse --short HEAD)
-
-# Config identity — compute BASE_DIR from this script's location
-# ---------------------------------------------------------------
+# Config identity and run directory
+# ---------------------------------
+# Results go in results/<config name>/<YYYY-MM-DD>[_N]/ — see run_dir.sh for
+# how the directory is chosen (new run vs. most recent run vs. RUN_DIR).
 CONFIG_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "${CONFIG_DIR}")"
-BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
+RESULTS_ROOT="${REPO_ROOT}/results/${CONFIG_NAME}"
+. "${REPO_ROOT}/run_dir.sh" || return 1
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
@@ -54,14 +57,21 @@ RUN_MODE="sbatch"
 # --------------------------
 PROJECT_CODE="PAS2635"
 
-MAX_JOBS=12
-SLEEP_TIME=60
+# CDS download throttling (used by run_download_and_process.sh)
+# CDS rejects new requests once you have 150 queued *across all your sessions*,
+# so keep this well below 150 if you might run more than one pipeline at once.
+MAX_CDS_REQUESTS=20   # max CDS requests in flight at once
+CDS_MAX_ATTEMPTS=5    # attempts per file before giving up on it
+CDS_RETRY_WAIT=300    # seconds before retrying a failed request (x attempt number)
 
+# The prep job is almost entirely waiting on the CDS queue (~10 s CPU/hour),
+# so 1 core is plenty. Each in-flight request is a python process (~35 MB).
+# Downloads are resumable: if this times out, rerun with --resume.
 PREP_NTASKS=1 # -n
 PREP_NNODES=1 # -N
-PREP_NCPUS=1 # --cpus-per-task #TODO: check this value is ok
-PREP_TIME="04:00:00" # --time
-PREP_MEM="1G" # --mem #TODO: check this value is ok
+PREP_NCPUS=1 # --cpus-per-task
+PREP_TIME="24:00:00" # --time
+PREP_MEM="2G" # --mem
 
 SPLINE_NTASKS=1 # -n
 SPLINE_NNODES=1 # -N

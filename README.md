@@ -53,6 +53,25 @@ pip install numpy matplotlib geopy scipy pandas netcdf4 mceq "cdsapi>=0.7.7"
 ./extract_psfc_muflux.sh <path_to_config>
 ```
 
+Wait for each stage's jobs to finish before starting the next.
+
+### Where results go
+Each run is saved to `results/<config name>/<YYYY-MM-DD>/` (or `<YYYY-MM-DD>_2`, `_3`, ... if there is already a run that day), independent of the git commit. The git hash, whether the tree was dirty, and a copy of the config are recorded in `run_info.txt` and `config_used.sh` inside the run folder.
+
+- `submit_prep_density_data.sh` always creates a **new** run folder.
+- Every later script uses the **most recent** run folder for that config.
+- Submitted jobs are told which folder to use when they are submitted, so starting a new run never redirects jobs that are already queued.
+- To work on an older run, set `RUN_DIR`, e.g. `RUN_DIR=results/default/2026-10-12 ./submit_spline_jobs.sh`
+
+### Downloads and the CDS queue limit
+CDS rejects requests once you have 150 queued across *all* your sessions. `run_download_and_process.sh` keeps at most `MAX_CDS_REQUESTS` requests in flight (set in the config) and retries failed requests up to `CDS_MAX_ATTEMPTS` times. Per-request logs are in `<run>/logs/downloads/`, and anything that still failed is listed in `<run>/logs/failed_downloads.txt`.
+
+Every stage skips outputs that already exist and writes files atomically, so if the prep job hits its time limit (or some downloads fail), continue the same run with
+```
+./submit_prep_density_data.sh <path_to_config> --resume
+```
+The same goes for `submit_spline_jobs.sh` / `submit_muflux_jobs.sh`: rerunning them only submits jobs for missing outputs.
+
 6. Use `plot_output.ipynb` to visualize summary
 
 To see job history details since `<date>` (`YYYY-MM-DD` format), including job ID, job name, start date/time, elapsed computational time, max time allocation, maximum memory actually used by any single task in the job, memory requested, and job status (respectively), run

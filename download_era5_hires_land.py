@@ -1,7 +1,6 @@
 ''' Script to request for ERA-5 reanalysis data within a limited area for a limited time '''
 
 from cdsapi import Client
-import numpy as np
 import datetime
 import sys
 import os
@@ -24,6 +23,15 @@ raw_dir.mkdir(parents=True, exist_ok=True)
 # Construct output filename
 outfile = raw_dir / ('era5_hires_land_' + date.strftime('%Y-%m-%d_%H') + 'UTC.nc')
 
+# Skip files that are already complete (lets an interrupted run be resumed)
+if outfile.exists() and outfile.stat().st_size > 0:
+    print("already have", outfile)
+    sys.exit(0)
+
+# Download to a temporary name and rename only once complete, so a killed
+# job never leaves a truncated file that looks finished
+partfile = outfile.with_name(outfile.name + '.part')
+
 c = Client()
 
 c.retrieve(
@@ -39,4 +47,7 @@ c.retrieve(
         'day': date.strftime('%d'),
         'time': date.strftime('%H')
     },
-    str(outfile))
+    str(partfile))
+
+os.replace(partfile, outfile)
+print("saved", outfile)

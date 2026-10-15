@@ -7,3 +7,6 @@ tests/output/
 log*
 .DS_Store
 !**/summary/**/*.npy
+*.part
+*.part.npy
+__pycache__/

@@ -107,11 +107,13 @@ mceq_run.set_density_model(t_atmosphere)
 #mceq_run.set_density_model(regc_atmosphere)
 e_grid = mceq_run.e_grid
 
-# Save egrid with job-unique ID so concurrent jobs don't clobber each other
-# egrid_id = os.environ.get('SLURM_JOB_ID', str(os.getpid()))
+# Many jobs may try to save egrid at once: each writes its own temporary file
+# and renames it into place (atomic), so readers never see a half-written file
 egrid_outfile = outpath.parent / 'egrid.npy'
 if not egrid_outfile.exists():
-    np.save(egrid_outfile, e_grid)
+    egrid_tmpfile = outpath.parent / f"egrid.{os.environ.get('SLURM_JOB_ID', 'local')}.{os.getpid()}.part.npy"
+    np.save(egrid_tmpfile, e_grid)
+    os.replace(egrid_tmpfile, egrid_outfile)
     print(f"Saved egrid to {egrid_outfile}")
 else:
     print(f"egrid already exists at {egrid_outfile}, skipping save")
@@ -138,6 +140,10 @@ for theta in thetas:
 muflux = eints[0]
 
 #np.save(outpath+'/output/%s/muflux_%s_%s.npy'%(str(simnum).zfill(5), str(simnum).zfill(5), str(this_theta).zfill(4)), muflux)
-np.save(outpath, muflux)
+# Write to a temporary file then rename, so a killed job never leaves a
+# truncated output that later stages would treat as finished
+muflux_tmpfile = outpath.with_name(outpath.stem + '.part.npy')
+np.save(muflux_tmpfile, muflux)
+os.replace(muflux_tmpfile, outpath)
 t2 = time.time()
 print("run time:", t2-t1)

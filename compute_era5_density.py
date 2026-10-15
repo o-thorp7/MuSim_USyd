@@ -178,30 +178,70 @@ def compute_density_from_era5_file( file_prefix, ztype_dict, date_targ ):
 
 
 
+''' Returns the list of raw files needed for one prefix/time that are missing '''
+def missing_raw_files( file_prefix, ztype_dict, date_targ ):
+    missing = []
+    for ztype in ['land','plvl']:
+        fname = RAW_DIR / f"{file_prefix}_{ztype}" / date_targ.strftime(
+            file_prefix+"_"+ztype_dict[ztype]+"_%Y-%m-%d_%HUTC.nc"
+        )
+        if not fname.exists():
+            missing.append( str(fname) )
+    return missing
+
+
+
+
 '''
     Main program
 '''
+outfname = None
+n_skipped_missing = 0
 for pfx in era5_prefix_list:
     for date_nw in date_list:
+
+        # Create subdirectory if needed
+        out_subdir = DENSITY_DIR / pfx
+        out_subdir.mkdir(parents=True, exist_ok=True)
+
+        this_outfname = out_subdir / date_nw.strftime(
+            'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
+        )
+
+        # Already done on a previous (resumed) run
+        if this_outfname.exists():
+            print( 'Already have ', this_outfname, ', skipping' )
+            continue
+
+        # Download failed or hasn't happened yet: skip this time step
+        missing = missing_raw_files( pfx, era5_ztype_dict, date_nw )
+        if missing:
+            print( 'WARNING: skipping ', pfx, ' on ', date_nw, ', missing raw files: ', missing )
+            n_skipped_missing += 1
+            continue
 
         print( 'Processing prefix ', pfx, ' on ', date_nw )
 
         # Compute density information
         density_data_dict = compute_density_from_era5_file( pfx, era5_ztype_dict, date_nw )
 
-        # Output data as pickle file
-        # Create subdirectory if needed
-        out_subdir = DENSITY_DIR / pfx
-        out_subdir.mkdir(parents=True, exist_ok=True)
-        
-        outfname = out_subdir / date_nw.strftime(
-            'density_' + pfx + "_%Y-%m-%d_%HUTC.pkl"
-        )
-        with open( outfname, 'wb') as f:
+        # Output data as pickle file. Write to a temporary name then rename,
+        # so an interrupted job never leaves a truncated pickle behind.
+        tmpfname = this_outfname.with_name( this_outfname.name + '.part' )
+        with open( tmpfname, 'wb') as f:
             pickle.dump( density_data_dict, f )
+        os.replace( tmpfname, this_outfname )
+        outfname = this_outfname
         # --- end of pickle dump process
     # --- End of loop over ERA5 prefixes
 # --- End of loop over dates
+
+if n_skipped_missing:
+    print( 'WARNING: %d prefix/time combinations skipped due to missing raw files' % n_skipped_missing )
+
+# Nothing new was computed, so there is nothing to sanity-check
+if outfname is None:
+    raise SystemExit(0)
 
 
 

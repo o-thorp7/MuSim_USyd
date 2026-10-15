@@ -12,6 +12,7 @@ fi
 
 # Load configuration
 . "${CONFIG_FILE}"
+echo "Using run directory: ${BASE_DIR}"
 HIRES_DIR="${DENSITY_DIR}/era5_hires"
 ENS_DIR="${DENSITY_DIR}/era5_ensem"
 
