@@ -7,10 +7,10 @@
 
 # Dates of interest
 # ------------------
-date_st=202606090000    # First date of interest
-date_ed=202607230000    # Last date of interest
-# date_st=202609290000    # First date of interest
-# date_ed=202610100000    # Last date of interest
+# date_st=202606090000    # First date of interest
+# date_ed=202607230000    # Last date of interest
+date_st=202609290000    # First date of interest
+date_ed=202610100000    # Last date of interest
 time_interval=180       # Number of minutes between files to download
 
 
@@ -91,8 +91,8 @@ MUFLUX_MEM="3G" # --mem
 # Python environment
 # -------------------
 ENV_TYPE="venv"             # "venv" or "conda"
-# VENV_PATH="${REPO_ROOT}/isp_venv"
-VENV_PATH="/users/PAS2635/zyin8122/.venv"
+VENV_PATH="${REPO_ROOT}/.isp_venv"
+# VENV_PATH="/users/PAS2635/zyin8122/.venv"
 CONDA_ENV_NAME="isp"
 CONDA_BASE_PATH="${HOME}/miniconda3"
 
