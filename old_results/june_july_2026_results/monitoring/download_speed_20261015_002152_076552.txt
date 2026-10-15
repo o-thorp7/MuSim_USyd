@@ -1,0 +1,103 @@
+Checked: 2026-10-15 00:21:51 EDT
+Raw directory: /users/PAS2635/zyin8122/MuSim_USyd/june_july_2026_results/raw
+Non-empty .nc files: 1407/1412; zero-size files: 0
+
+EVERY 20 MIN INTERVAL:
+Interval beginning (OSC local)   Files   Coverage
+10-13 18:00 -0400            29   first interval: observation starts partway through
+10-13 18:20 -0400            41   full 20 min interval
+10-13 18:40 -0400            44   full 20 min interval
+10-13 19:00 -0400            45   full 20 min interval
+10-13 19:20 -0400            40   full 20 min interval
+10-13 19:40 -0400            34   full 20 min interval
+10-13 20:00 -0400            47   full 20 min interval
+10-13 20:20 -0400            36   full 20 min interval
+10-13 20:40 -0400            37   full 20 min interval
+10-13 21:00 -0400            28   full 20 min interval
+10-13 21:20 -0400            37   full 20 min interval
+10-13 21:40 -0400            38   full 20 min interval
+10-13 22:00 -0400            25   full 20 min interval
+10-13 22:20 -0400            32   full 20 min interval
+10-13 22:40 -0400            37   full 20 min interval
+10-13 23:00 -0400            25   full 20 min interval
+10-13 23:20 -0400            13   full 20 min interval
+10-13 23:40 -0400             5   full 20 min interval
+10-14 00:00 -0400             3   full 20 min interval
+10-14 00:20 -0400             3   full 20 min interval
+10-14 00:40 -0400            10   full 20 min interval
+10-14 01:00 -0400             2   full 20 min interval
+10-14 01:20 -0400             2   full 20 min interval
+10-14 01:40 -0400             2   full 20 min interval
+10-14 02:00 -0400             1   full 20 min interval
+10-14 02:20 -0400             1   full 20 min interval
+10-14 02:40 -0400             1   full 20 min interval
+10-14 03:00 -0400             1   full 20 min interval
+10-14 03:20 -0400             1   full 20 min interval
+10-14 03:40 -0400             1   full 20 min interval
+10-14 04:00 -0400             0   full 20 min interval
+10-14 04:20 -0400             2   full 20 min interval
+10-14 04:40 -0400             0   full 20 min interval
+10-14 05:00 -0400             1   full 20 min interval
+10-14 05:20 -0400             1   full 20 min interval
+10-14 05:40 -0400             1   full 20 min interval
+10-14 06:00 -0400             1   full 20 min interval
+10-14 06:20 -0400             1   full 20 min interval
+10-14 06:40 -0400             0   full 20 min interval
+10-14 07:00 -0400             1   full 20 min interval
+10-14 07:20 -0400             1   full 20 min interval
+10-14 07:40 -0400             0   full 20 min interval
+10-14 08:00 -0400             1   full 20 min interval
+10-14 08:20 -0400             0   full 20 min interval
+10-14 08:40 -0400             1   full 20 min interval
+10-14 09:00 -0400             1   full 20 min interval
+10-14 09:20 -0400             1   full 20 min interval
+10-14 09:40 -0400             0   full 20 min interval
+10-14 10:00 -0400             1   full 20 min interval
+10-14 10:20 -0400             1   full 20 min interval
+10-14 10:40 -0400             0   full 20 min interval
+10-14 11:00 -0400             2   full 20 min interval
+10-14 11:20 -0400             0   full 20 min interval
+10-14 11:40 -0400             1   full 20 min interval
+10-14 12:00 -0400             0   full 20 min interval
+10-14 12:20 -0400             1   full 20 min interval
+10-14 12:40 -0400             1   full 20 min interval
+10-14 13:00 -0400             2   full 20 min interval
+10-14 13:20 -0400             0   full 20 min interval
+10-14 13:40 -0400             1   full 20 min interval
+10-14 14:00 -0400             1   full 20 min interval
+10-14 14:20 -0400             2   full 20 min interval
+10-14 14:40 -0400             0   full 20 min interval
+10-14 15:00 -0400             0   full 20 min interval
+10-14 15:20 -0400             0   full 20 min interval
+10-14 15:40 -0400             3   full 20 min interval
+10-14 16:00 -0400            18   full 20 min interval
+10-14 16:20 -0400            36   full 20 min interval
+10-14 16:40 -0400            34   full 20 min interval
+10-14 17:00 -0400            33   full 20 min interval
+10-14 17:20 -0400            41   full 20 min interval
+10-14 17:40 -0400            36   full 20 min interval
+10-14 18:00 -0400            27   full 20 min interval
+10-14 18:20 -0400            37   full 20 min interval
+10-14 18:40 -0400            37   full 20 min interval
+10-14 19:00 -0400            38   full 20 min interval
+10-14 19:20 -0400            41   full 20 min interval
+10-14 19:40 -0400            33   full 20 min interval
+10-14 20:00 -0400            33   full 20 min interval
+10-14 20:20 -0400            32   full 20 min interval
+10-14 20:40 -0400            30   full 20 min interval
+10-14 21:00 -0400            41   full 20 min interval
+10-14 21:20 -0400             3   full 20 min interval
+10-14 21:40 -0400             4   full 20 min interval
+10-14 22:00 -0400            10   full 20 min interval
+10-14 22:20 -0400            38   full 20 min interval
+10-14 22:40 -0400            37   full 20 min interval
+10-14 23:00 -0400            39   full 20 min interval
+10-14 23:20 -0400            38   full 20 min interval
+10-14 23:40 -0400            26   full 20 min interval
+10-15 00:00 -0400            14   full 20 min interval
+10-15 00:20 -0400             1   CURRENT: incomplete; not extrapolated
+
+No job/data/config changes or CDS requests were made. Only monitoring reports are written.
+Mtimes are file arrivals, not validation; restored/copied files can distort historical rates.
+Interval graph: /users/PAS2635/zyin8122/MuSim_USyd/june_july_2026_results/monitoring/download_speed_20261015_002152_076552.png
+Text report: /users/PAS2635/zyin8122/MuSim_USyd/june_july_2026_results/monitoring/download_speed_20261015_002152_076552.txt
