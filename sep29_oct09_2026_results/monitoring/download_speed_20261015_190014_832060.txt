@@ -1,0 +1,53 @@
+Checked: 2026-10-15 19:00:14 EDT
+Raw directory: /users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results/raw
+Non-empty .nc files: 105/1412; zero-size files: 0
+
+EVERY 20 MIN INTERVAL:
+Interval beginning (OSC local)   Files   Coverage
+10-15 05:20 -0400             1   first interval: observation starts partway through
+10-15 05:40 -0400             4   full 20 min interval
+10-15 06:00 -0400             0   full 20 min interval
+10-15 06:20 -0400             0   full 20 min interval
+10-15 06:40 -0400             0   full 20 min interval
+10-15 07:00 -0400             0   full 20 min interval
+10-15 07:20 -0400             0   full 20 min interval
+10-15 07:40 -0400             1   full 20 min interval
+10-15 08:00 -0400             0   full 20 min interval
+10-15 08:20 -0400             0   full 20 min interval
+10-15 08:40 -0400             0   full 20 min interval
+10-15 09:00 -0400             0   full 20 min interval
+10-15 09:20 -0400             0   full 20 min interval
+10-15 09:40 -0400             1   full 20 min interval
+10-15 10:00 -0400             0   full 20 min interval
+10-15 10:20 -0400             0   full 20 min interval
+10-15 10:40 -0400             0   full 20 min interval
+10-15 11:00 -0400             0   full 20 min interval
+10-15 11:20 -0400             1   full 20 min interval
+10-15 11:40 -0400             2   full 20 min interval
+10-15 12:00 -0400             0   full 20 min interval
+10-15 12:20 -0400             1   full 20 min interval
+10-15 12:40 -0400             0   full 20 min interval
+10-15 13:00 -0400             1   full 20 min interval
+10-15 13:20 -0400             0   full 20 min interval
+10-15 13:40 -0400             0   full 20 min interval
+10-15 14:00 -0400             1   full 20 min interval
+10-15 14:20 -0400             0   full 20 min interval
+10-15 14:40 -0400             1   full 20 min interval
+10-15 15:00 -0400             0   full 20 min interval
+10-15 15:20 -0400             1   full 20 min interval
+10-15 15:40 -0400             0   full 20 min interval
+10-15 16:00 -0400             0   full 20 min interval
+10-15 16:20 -0400             1   full 20 min interval
+10-15 16:40 -0400             1   full 20 min interval
+10-15 17:00 -0400             1   full 20 min interval
+10-15 17:20 -0400             4   full 20 min interval
+10-15 17:40 -0400            26   full 20 min interval
+10-15 18:00 -0400            19   full 20 min interval
+10-15 18:20 -0400            19   full 20 min interval
+10-15 18:40 -0400            19   full 20 min interval
+10-15 19:00 -0400             0   CURRENT: incomplete; not extrapolated
+
+No job/data/config changes or CDS requests were made. Only monitoring reports are written.
+Mtimes are file arrivals, not validation; restored/copied files can distort historical rates.
+Interval graph: /users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results/monitoring/download_speed_20261015_190014_832060.png
+Text report: /users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results/monitoring/download_speed_20261015_190014_832060.txt

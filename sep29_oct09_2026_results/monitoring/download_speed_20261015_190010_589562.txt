@@ -1,0 +1,26 @@
+Checked: 2026-10-15 19:00:10 EDT
+Raw directory: /users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results/raw
+Non-empty .nc files: 105/1412; zero-size files: 0
+
+EVERY 60 MIN INTERVAL:
+Interval beginning (OSC local)   Files   Coverage
+10-15 05:00 -0400             5   first interval: observation starts partway through
+10-15 06:00 -0400             0   full 60 min interval
+10-15 07:00 -0400             1   full 60 min interval
+10-15 08:00 -0400             0   full 60 min interval
+10-15 09:00 -0400             1   full 60 min interval
+10-15 10:00 -0400             0   full 60 min interval
+10-15 11:00 -0400             3   full 60 min interval
+10-15 12:00 -0400             1   full 60 min interval
+10-15 13:00 -0400             1   full 60 min interval
+10-15 14:00 -0400             2   full 60 min interval
+10-15 15:00 -0400             1   full 60 min interval
+10-15 16:00 -0400             2   full 60 min interval
+10-15 17:00 -0400            31   full 60 min interval
+10-15 18:00 -0400            57   full 60 min interval
+10-15 19:00 -0400             0   CURRENT: incomplete; not extrapolated
+
+No job/data/config changes or CDS requests were made. Only monitoring reports are written.
+Mtimes are file arrivals, not validation; restored/copied files can distort historical rates.
+Interval graph: /users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results/monitoring/download_speed_20261015_190010_589562.png
+Text report: /users/PAS2635/zyin8122/MuSim_USyd/sep29_oct09_2026_results/monitoring/download_speed_20261015_190010_589562.txt

@@ -7,7 +7,8 @@
 set -euo pipefail
 
 # Get config file from first argument, default to config/default.sh
-CONFIG_FILE="${1:-config/default.sh}"
+# CONFIG_FILE="${1:-config/default.sh}"
+CONFIG_FILE="${1:-config/sep29_oct09_2026.sh}"
 
 if [[ ! -f "${CONFIG_FILE}" ]]; then
     echo "Error: Config file not found: ${CONFIG_FILE}" >&2
