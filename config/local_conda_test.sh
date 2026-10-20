@@ -29,14 +29,15 @@ download_script_list="download_era5_hires_land.py  download_era5_hires_plvl.py  
 # RUNTIME CONFIGURATION — all paths and resource settings below
 # =========================================================================
 
-GIT_HASH=$(git rev-parse --short HEAD)
-
-# Config identity — compute BASE_DIR from this script's location
-# ---------------------------------------------------------------
+# Config identity and run directory
+# ---------------------------------
+# Results go in results/<config name>/<YYYY-MM-DD>[_N]/ — see run_dir.sh for
+# how the directory is chosen (new run vs. most recent run vs. RUN_DIR).
 CONFIG_NAME="$(basename "${BASH_SOURCE[0]}" .sh)"
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "${CONFIG_DIR}")"
-BASE_DIR="${REPO_ROOT}/${CONFIG_NAME}_${GIT_HASH}_results"
+RESULTS_ROOT="${REPO_ROOT}/results/${CONFIG_NAME}"
+. "${REPO_ROOT}/run_dir.sh" || return 1
 
 # Run mode: "sbatch" submits to Slurm, "local" runs directly via bash/python
 # ---------------------------------------------------------------------------
